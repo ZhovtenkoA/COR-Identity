@@ -1,4 +1,3 @@
-from libgravatar import Gravatar
 from sqlalchemy.orm import Session
 
 from cor_auth.database.models import User, Role
