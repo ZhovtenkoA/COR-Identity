@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     redis_host: str = "REDIS_HOST"
     redis_port: int = 0
     pythonpath: str = "PYTHONPATH"
+    encryption_key: str = "ENCRYPTION_KEY"
 
     class Config:
         env_file = ".env"

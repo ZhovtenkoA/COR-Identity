@@ -32,3 +32,10 @@ class TokenModel(BaseModel):
 
 class EmailSchema(BaseModel):
     email: EmailStr
+
+class RecordModel(BaseModel):
+    record: str = Field(max_length=100)
+
+class RecordResponse(RecordModel):
+    id: int
+    record: bytes = Field()

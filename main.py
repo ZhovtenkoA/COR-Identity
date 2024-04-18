@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from cor_auth.routes import auth
 from cor_auth.database.db import get_db
-from cor_auth.routes import auth, users
+from cor_auth.routes import auth, users, record
 
 app = FastAPI()
 
@@ -100,6 +100,7 @@ def healthchecher(db: Session = Depends(get_db)):
 
 app.include_router(auth.router, prefix="/api")
 app.include_router(users.router, prefix="/api")
+app.include_router(record.router, prefix="/api")
 
 
 if __name__ == "__main__":

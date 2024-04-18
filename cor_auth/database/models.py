@@ -25,6 +25,12 @@ class User(Base):
     confirmed = Column(Boolean, default=False)
     role: Mapped[Enum] = Column("role", Enum(Role), default=Role.admin)
 
+class Record(Base):
+    __tablename__ = "records"
+
+    id = Column(Integer, primary_key=True)
+    record = Column(String(100), nullable= False)
+
 Base.metadata.create_all(bind=engine)
 
 
