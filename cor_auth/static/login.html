@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Авторизация и регистрация</title>
+        <link rel="stylesheet" type="text/css" href="static/styles.css">
+    </head>
+<body>
+    <h1>Авторизация</h1>
+    <form action="api/auth/login" method="post">
+        <label for="username">Логин:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="Войти">
+    </form>
+
+    <h1>Регистрация</h1>
+    <form action="api/auth/signup" method="post">
+        <label for="new_username">Новый логин:</label>
+        <input type="text" id="new_username" name="new_username" required><br>
+        <label for="new_password">Новый пароль:</label>
+        <input type="password" id="new_password" name="new_password" required><br>
+        <input type="submit" value="Зарегистрироваться">
+    </form>
+</body>
+</html>

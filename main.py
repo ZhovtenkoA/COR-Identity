@@ -10,12 +10,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi_limiter import FastAPILimiter
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from cor_auth.routes import auth
 from cor_auth.database.db import get_db
 from cor_auth.routes import auth, users, record
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="cor_auth/static"), name="static")
 
 origins = ["http://localhost:3000"]
 
@@ -69,7 +72,8 @@ def read_root():
 
     :return: A dictionary
     """
-    return {"message": "Rest API Cor-Auth"}
+    return FileResponse("cor_auth/static/login.html")
+    # return {"message": "Rest API Cor-Auth"}
 
 
 @app.get("/api/healthchecker")
