@@ -1,7 +1,21 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     padding: 20px;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1 {
@@ -10,10 +24,9 @@ h1 {
 }
 
 form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 label {
@@ -24,7 +37,7 @@ label {
 
 input[type="text"],
 input[type="password"] {
-    width: 100%;
+    width: 100px;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -42,4 +55,12 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #45a049;
+}
+
+.registration-button {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
 }
