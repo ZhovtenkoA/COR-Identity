@@ -1,10 +1,6 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     padding: 20px;
 }
 
@@ -14,7 +10,7 @@ body {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
 }
@@ -22,9 +18,8 @@ body {
 h1 {
     color: #333;
     margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
+
 }
 
 form {
@@ -42,7 +37,7 @@ label {
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-    width: 100px;
+    width: 200px;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -66,7 +61,6 @@ input[type="submit"]:hover {
     background-color: blue;
     color: white;
     padding: 10px 20px;
-    margin-top: 20px;
-    border: none;
-    cursor: pointer;
+    margin: 0 auto;
+    display: block;
 }
