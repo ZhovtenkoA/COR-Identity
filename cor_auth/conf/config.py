@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     algorithm: str = "ALGORITHM"
     mail_username: str = "MAIL_USERNAME"
     mail_password: str = "MAIL_PASSWORD"
-    mail_from: str = "JOHN.SNOW@EXAMPLE.COM"
+    mail_from: str = "Cor.Auth@EXAMPLE.COM"
     mail_port: int = 0
     mail_server: str = "MAIL_SERVER"
     redis_host: str = "REDIS_HOST"
