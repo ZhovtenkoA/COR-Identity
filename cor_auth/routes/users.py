@@ -12,7 +12,9 @@ from pydantic import EmailStr
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.get("/get_all", response_model=list[UserDb], dependencies=[Depends(free_access)])
+@router.get(
+    "/get_all", response_model=list[UserDb], dependencies=[Depends(free_access)]
+)
 async def get_all_users(
     skip: int = 0,
     limit: int = 10,

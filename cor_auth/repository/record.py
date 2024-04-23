@@ -17,7 +17,9 @@ async def get_records(skip: int, limit: int, db: Session) -> List[Record]:
     :return: A list of record objects.
     """
     records = db.query(Record).offset(skip).limit(limit).all()
-    record_dicts = [{"record": str(record.record), "id": record.id} for record in records]
+    record_dicts = [
+        {"record": str(record.record), "id": record.id} for record in records
+    ]
     return record_dicts
 
 
@@ -38,7 +40,9 @@ async def get_record(record_id: int, db: Session, encryption_key: str) -> Record
     return record
 
 
-async def create_record(body: RecordModel, db: Session, encryption_key: str) -> RecordResponse:
+async def create_record(
+    body: RecordModel, db: Session, encryption_key: str
+) -> RecordResponse:
     """
     Create a new record in the database.
 
@@ -57,7 +61,9 @@ async def create_record(body: RecordModel, db: Session, encryption_key: str) -> 
     return RecordResponse(id=record.id, record=str(record.record))
 
 
-async def update_record(record_id: int, body: RecordModel, db: Session, encryption_key: str) -> Record | None:
+async def update_record(
+    record_id: int, body: RecordModel, db: Session, encryption_key: str
+) -> Record | None:
     """
     Update an existing record in the database.
 

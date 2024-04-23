@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    sqlalchemy_database_url: str = ("sqlite:///./sql_auth.db")
+    sqlalchemy_database_url: str = "sqlite:///./sql_auth.db"
     secret_key: str = "SECRET_KEY"
     algorithm: str = "ALGORITHM"
     mail_username: str = "MAIL_USERNAME"

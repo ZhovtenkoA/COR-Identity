@@ -3,6 +3,7 @@ from Crypto.Util.Padding import pad, unpad
 import base64
 import hashlib
 
+
 def encrypt_data(data, key):
     aes_key = key
     cipher = AES.new(aes_key, AES.MODE_CBC)
@@ -10,15 +11,17 @@ def encrypt_data(data, key):
     encoded_data = base64.b64encode(cipher.iv + encrypted_data)
     return encoded_data
 
+
 def decrypt_data(encrypted_data, key):
     aes_key = key
     decoded_data = base64.b64decode(encrypted_data)
-    iv = decoded_data[:AES.block_size]
-    ciphertext = decoded_data[AES.block_size:]
-    
+    iv = decoded_data[: AES.block_size]
+    ciphertext = decoded_data[AES.block_size :]
+
     cipher = AES.new(aes_key, AES.MODE_CBC, iv)
     decrypted_data = unpad(cipher.decrypt(ciphertext), AES.block_size)
     return decrypted_data.decode()
+
 
 def generate_aes_key(key):
     sha256 = hashlib.sha256()

@@ -22,16 +22,14 @@ conf = ConnectionConfig(
 )
 
 
-async def send_email(email: EmailStr, username: str, host: str):
+async def send_email(email: EmailStr, host: str):
     """
     The send_email function sends an email to the user with a link to confirm their email address.
         Args:
             email (str): The user's email address.
-            username (str): The username of the user who is registering for an account.  This will be used in the message body of the confirmation message sent to them via FastMail.
             host (str): The hostname that will be used in constructing a URL for confirming their account registration.
 
     :param email: EmailStr: Validate the email address
-    :param username: str: Pass the username to the template
     :param host: str: Pass the hostname of the server to the template
     :return: A coroutine object
     """
@@ -42,7 +40,6 @@ async def send_email(email: EmailStr, username: str, host: str):
             recipients=[email],
             template_body={
                 "host": host,
-                "username": username,
                 "token": token_verification,
             },
             subtype=MessageType.html,

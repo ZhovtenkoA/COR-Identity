@@ -29,8 +29,14 @@ ALGORITHM = settings.algorithm
 
 
 @router.post(
-    "/signup", response_model=ResponseUser, status_code=status.HTTP_201_CREATED)
-async def signup(body: UserModel, background_tasks: BackgroundTasks, request: Request, db: Session = Depends(get_db)):
+    "/signup", response_model=ResponseUser, status_code=status.HTTP_201_CREATED
+)
+async def signup(
+    body: UserModel,
+    background_tasks: BackgroundTasks,
+    request: Request,
+    db: Session = Depends(get_db),
+):
     """
     The signup function creates a new user in the database.
         It takes an email and password as input, hashes the password, and stores it in the database.
@@ -47,14 +53,20 @@ async def signup(body: UserModel, background_tasks: BackgroundTasks, request: Re
         )
     body.password = auth_service.get_password_hash(body.password)
     new_user = await repository_users.create_user(body, db)
-    background_tasks.add_task(send_email, new_user.email, new_user.username, request.base_url)
+    background_tasks.add_task(
+        send_email,
+        new_user.email,
+        # new_user.username,
+        request.base_url,
+    )
     return {"user": new_user, "detail": "User successfully created"}
 
 
 @router.post(
     "/login",
     response_model=TokenModel,
-    description="No more than 10 requests per minute")
+    description="No more than 10 requests per minute",
+)
 async def login(
     body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
@@ -94,7 +106,8 @@ async def login(
     "/refresh_token",
     response_model=TokenModel,
     description="No more than 10 requests per minute",
-    dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+    dependencies=[Depends(RateLimiter(times=10, seconds=60))],
+)
 async def refresh_token(
     credentials: HTTPAuthorizationCredentials = Security(security),
     db: Session = Depends(get_db),
@@ -156,9 +169,7 @@ async def confirmed_email(token: str, db: Session = Depends(get_db)):
     return {"message": "Email confirmed"}
 
 
-@router.post(
-    "/request_email",
-    description="No more than 10 requests per minute")
+@router.post("/request_email", description="No more than 10 requests per minute")
 async def request_email(
     body: EmailSchema,
     background_tasks: BackgroundTasks,
@@ -185,6 +196,9 @@ async def request_email(
         return {"message": "Your email is already confirmed"}
     if user:
         background_tasks.add_task(
-            send_email, user.email, user.username, request.base_url
+            send_email,
+            user.email,
+            # user.username,
+            request.base_url,
         )
     return {"message": "Check your email for confirmation."}

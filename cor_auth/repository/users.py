@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+import uuid
 
 from cor_auth.database.models import User, Role
 from cor_auth.schemas import UserModel
@@ -32,6 +33,7 @@ async def create_user(body: UserModel, db: Session) -> User:
     """
 
     new_user = User(**body.model_dump())
+    new_user.id = str(uuid.uuid4())
     new_user.role = Role.user
 
     users_count = db.query(func.count(User.id)).scalar()

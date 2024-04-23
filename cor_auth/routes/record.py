@@ -13,7 +13,9 @@ router = APIRouter(prefix="/records", tags=["Records"])
 encryption_key = settings.encryption_key
 
 
-@router.get("/", response_model=List[RecordResponse], dependencies=[Depends(free_access)])
+@router.get(
+    "/", response_model=List[RecordResponse], dependencies=[Depends(free_access)]
+)
 async def read_records(skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
     """
     Get a list of records.
@@ -31,7 +33,11 @@ async def read_records(skip: int = 0, limit: int = 50, db: Session = Depends(get
     return records
 
 
-@router.get("/{record_id}", response_model=RecordResponse, dependencies=[Depends(admin_moderator)])
+@router.get(
+    "/{record_id}",
+    response_model=RecordResponse,
+    dependencies=[Depends(admin_moderator)],
+)
 async def read_record(record_id: int, db: Session = Depends(get_db)):
     """
     Get a specific record by ID.
@@ -52,7 +58,9 @@ async def read_record(record_id: int, db: Session = Depends(get_db)):
     return record
 
 
-@router.post("/", response_model=RecordResponse, dependencies=[Depends(admin_moderator)])
+@router.post(
+    "/", response_model=RecordResponse, dependencies=[Depends(admin_moderator)]
+)
 async def create_record(body: RecordModel, db: Session = Depends(get_db)):
     """
     Create a new record.
@@ -67,8 +75,12 @@ async def create_record(body: RecordModel, db: Session = Depends(get_db)):
     return await repository_record.create_record(body, db, encryption_key)
 
 
-@router.put("/{record_id}", response_model=RecordResponse, dependencies=[Depends(admin)])
-async def update_record(record_id: int, body: RecordModel, db: Session = Depends(get_db)):
+@router.put(
+    "/{record_id}", response_model=RecordResponse, dependencies=[Depends(admin)]
+)
+async def update_record(
+    record_id: int, body: RecordModel, db: Session = Depends(get_db)
+):
     """
     Update an existing record.
 
@@ -90,7 +102,9 @@ async def update_record(record_id: int, body: RecordModel, db: Session = Depends
     return record
 
 
-@router.delete("/{record_id}", response_model=RecordResponse, dependencies=[Depends(admin)])
+@router.delete(
+    "/{record_id}", response_model=RecordResponse, dependencies=[Depends(admin)]
+)
 async def remove_record(record_id: int, db: Session = Depends(get_db)):
     """
     Remove a record.

@@ -3,14 +3,12 @@ from cor_auth.database.models import Role
 
 
 class UserModel(BaseModel):
-    username: str = Field(min_length=4, max_length=16)
     email: str
-    password: str = Field(min_length=6, max_length=10)
+    password: str = Field(min_length=4, max_length=10)
 
 
 class UserDb(BaseModel):
-    id: int
-    username: str
+    id: str
     email: str
     role: Role
 
@@ -33,8 +31,10 @@ class TokenModel(BaseModel):
 class EmailSchema(BaseModel):
     email: EmailStr
 
+
 class RecordModel(BaseModel):
     record: str = Field(max_length=100)
+
 
 class RecordResponse(RecordModel):
     id: int
