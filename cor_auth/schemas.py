@@ -38,3 +38,7 @@ class RecordModel(BaseModel):
 class RecordResponse(RecordModel):
     id: int
     record: bytes = Field()
+
+class VerificationModel(BaseModel):
+    email: EmailStr
+    verification_code: int

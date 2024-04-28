@@ -49,3 +49,32 @@ async def send_email(email: EmailStr, host: str):
         await fm.send_message(message, template_name="email_templates.html")
     except ConnectionErrors as err:
         print(err)
+
+async def send_email_code(email: EmailStr, host: str, verification_code):
+    """
+    The send_email function sends an email to the user with a link to confirm their email address.
+        Args:
+            email (str): The user's email address.
+            host (str): The hostname that will be used in constructing a URL for confirming their account registration.
+
+    :param email: EmailStr: Validate the email address
+    :param host: str: Pass the hostname of the server to the template
+    :return: A coroutine object
+    """
+    print('sending email')
+    try:
+        message = MessageSchema(
+            subject="Confirm your email ",
+            recipients=[email],
+            template_body={
+                "host": host,
+                "code": verification_code,
+            },
+            subtype=MessageType.html,
+        )
+
+        fm = FastMail(conf)
+        await fm.send_message(message, template_name="email_templates.html")
+        print('sending email done')
+    except ConnectionErrors as err:
+        print(err)

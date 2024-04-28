@@ -14,12 +14,13 @@ from fastapi.security import (
 )
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.orm import Session
+from random import randint
 
 from cor_auth.database.db import get_db
-from cor_auth.schemas import UserModel, ResponseUser, TokenModel, EmailSchema
+from cor_auth.schemas import UserModel, ResponseUser, TokenModel, EmailSchema, VerificationModel
 from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
-from cor_auth.services.email import send_email
+from cor_auth.services.email import send_email, send_email_code
 from cor_auth.conf.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Authorization"])
@@ -53,12 +54,11 @@ async def signup(
         )
     body.password = auth_service.get_password_hash(body.password)
     new_user = await repository_users.create_user(body, db)
-    background_tasks.add_task(
-        send_email,
-        new_user.email,
-        # new_user.username,
-        request.base_url,
-    )
+    # background_tasks.add_task(
+    #     send_email,
+    #     new_user.email,
+    #     request.base_url,
+    # )
     return {"user": new_user, "detail": "User successfully created"}
 
 
@@ -82,10 +82,10 @@ async def login(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email"
         )
-    if not user.confirmed:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Email not confirmed"
-        )
+    # if not user.confirmed:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED, detail="Email not confirmed"
+    #     )
     if not auth_service.verify_password(body.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
@@ -142,31 +142,31 @@ async def refresh_token(
     }
 
 
-@router.get("/confirmed_email/{token}")
-async def confirmed_email(token: str, db: Session = Depends(get_db)):
-    """
-    The confirmed_email function is used to confirm a user's email address.
-    It takes the token from the URL and uses it to get the user's email address.
-    Then, it checks if that user exists in our database, and if they do not exist,
-    an HTTP 400 error is raised. If they do exist but their account has already been confirmed,
-    then a message saying so will be returned. Otherwise (if they are found in our database
-    but have not yet confirmed their account), we call repository_users' confirmed_email function
-    with that email as its argument
+# @router.get("/confirmed_email/{token}")
+# async def confirmed_email(token: str, db: Session = Depends(get_db)):
+#     """
+#     The confirmed_email function is used to confirm a user's email address.
+#     It takes the token from the URL and uses it to get the user's email address.
+#     Then, it checks if that user exists in our database, and if they do not exist,
+#     an HTTP 400 error is raised. If they do exist but their account has already been confirmed,
+#     then a message saying so will be returned. Otherwise (if they are found in our database
+#     but have not yet confirmed their account), we call repository_users' confirmed_email function
+#     with that email as its argument
 
-    :param token: str: Get the token from the url
-    :param db: Session: Get the database session
-    :return: A json object with a message
-    """
-    email = await auth_service.get_email_from_token(token)
-    user = await repository_users.get_user_by_email(email, db)
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error"
-        )
-    if user.confirmed:
-        return {"message": "Your email is already confirmed"}
-    await repository_users.confirmed_email(email, db)
-    return {"message": "Email confirmed"}
+#     :param token: str: Get the token from the url
+#     :param db: Session: Get the database session
+#     :return: A json object with a message
+#     """
+#     email = await auth_service.get_email_from_token(token)
+#     user = await repository_users.get_user_by_email(email, db)
+#     if user is None:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error"
+#         )
+#     if user.confirmed:
+#         return {"message": "Your email is already confirmed"}
+#     await repository_users.confirmed_email(email, db)
+#     return {"message": "Email confirmed"}
 
 
 @router.post("/request_email", description="No more than 10 requests per minute")
@@ -201,3 +201,44 @@ async def request_email(
             request.base_url,
         )
     return {"message": "Check your email for confirmation."}
+
+# Маршрут для отправки кода подтверждения на почту пользователя
+@router.post("/send_verification_code")
+async def send_verification_code(
+    body: EmailSchema,
+    background_tasks: BackgroundTasks,
+    request: Request,
+    db: Session = Depends(get_db)):
+
+    verification_code = randint(100000, 999999)
+
+    exist_user = await repository_users.get_user_by_email(body.email, db)
+    if exist_user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Account already exists"
+        )
+    if exist_user != None and exist_user.confirmed:
+        return {"message": "Your email is already confirmed"}
+    
+    if exist_user == None:
+        background_tasks.add_task(
+            send_email_code,
+            body.email,
+            request.base_url,
+            verification_code
+        )
+        await repository_users.write_verification_code(email=body.email, db=db, verification_code=verification_code)
+    return {"message": "Check your email for verification code."}
+
+# Маршрут подтверждения почты/кода
+@router.post("/confirm_email")
+async def send_verification_code(
+    body: VerificationModel,
+    db: Session = Depends(get_db)):
+
+    ver_code = await repository_users.verify_verification_code(body.email, db, body.verification_code)
+    if ver_code:
+        return {"message": "Your email is confirmed"}
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid verification code")

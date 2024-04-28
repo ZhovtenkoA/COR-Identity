@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 import uuid
 
-from cor_auth.database.models import User, Role
+from cor_auth.database.models import User, Role, Verification
 from cor_auth.schemas import UserModel
 from sqlalchemy import func
 
@@ -63,17 +63,17 @@ async def update_token(user: User, token: str | None, db: Session) -> None:
     db.commit()
 
 
-async def confirmed_email(email: str, db: Session) -> None:
-    """
-    The confirmed_email function sets the confirmed field of a user to True.
+# async def confirmed_email(email: str, db: Session) -> None:
+#     """
+#     The confirmed_email function sets the confirmed field of a user to True.
 
-    :param email: str: Pass the email address of the user to be confirmed
-    :param db: Session: Pass the database session into the function
-    :return: None
-    """
-    user = await get_user_by_email(email, db)
-    user.confirmed = True
-    db.commit()
+#     :param email: str: Pass the email address of the user to be confirmed
+#     :param db: Session: Pass the database session into the function
+#     :return: None
+#     """
+#     user = await get_user_by_email(email, db)
+#     user.confirmed = True
+#     db.commit()
 
 
 async def get_users(skip: int, limit: int, db: Session) -> list[User]:
@@ -109,3 +109,41 @@ async def make_user_role(email: str, role: Role, db: Session) -> None:
     except Exception as e:
         db.rollback()
         raise e
+
+async def write_verification_code(email: str, db: Session, verification_code: int) -> None:
+    """
+
+    :param email: str: Pass the email address of the user to be confirmed
+    :param db: Session: Pass the database session into the function
+    :return: None
+    """
+    # if db.query(Verification).filter(Verification.email == email).first():
+    #     print('already exist')
+    #     raise Exception
+    verification_record = Verification(email = email, verification_code = verification_code)
+    try:
+        db.add(verification_record)
+        db.commit()
+        db.refresh(verification_record)
+        print('write code to db')
+    except Exception as e:
+        db.rollback()
+        raise e
+
+async def verify_verification_code(email: str, db: Session, verification_code: int) -> None:
+    """
+
+    :param email: str: Pass the email address of the user to be confirmed
+    :param db: Session: Pass the database session into the function
+    :return: None
+    """
+    try:
+        verification_record = db.query(Verification).filter(Verification.email == email).first()
+        if verification_record.verification_code == verification_code:
+            return True
+        else:
+            None
+    except Exception as e:
+        raise e
+        
+

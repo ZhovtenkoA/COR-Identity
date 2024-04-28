@@ -22,8 +22,15 @@ class User(Base):
     password = Column(String(250), nullable=False)
     access_token = Column(String(250), nullable=True)
     refresh_token = Column(String(250), nullable=True)
-    confirmed = Column(Boolean, default=False)
+    # confirmed = Column(Boolean, default=False)
     role: Mapped[Enum] = Column("role", Enum(Role), default=Role.admin)
+    verification_code = Column(Integer, default=None)
+
+class Verification(Base):
+    __tablename__ = "verification"
+
+    email = Column(String(250), unique=True, nullable=False, primary_key=True)
+    verification_code = Column(Integer, default=None)
 
 
 class Record(Base):
