@@ -117,18 +117,25 @@ async def write_verification_code(email: str, db: Session, verification_code: in
     :param db: Session: Pass the database session into the function
     :return: None
     """
-    # if db.query(Verification).filter(Verification.email == email).first():
-    #     print('already exist')
-    #     raise Exception
-    verification_record = Verification(email = email, verification_code = verification_code)
-    try:
-        db.add(verification_record)
-        db.commit()
-        db.refresh(verification_record)
-        print('write code to db')
-    except Exception as e:
-        db.rollback()
-        raise e
+    verification_record = db.query(Verification).filter(Verification.email == email).first()
+    if verification_record:
+        verification_record.verification_code = verification_code
+        try:
+            db.commit()
+            print('Updated verification code in the existing record')
+        except Exception as e:
+            db.rollback()
+            raise e
+    else:
+        verification_record = Verification(email=email, verification_code=verification_code)
+        try:
+            db.add(verification_record)
+            db.commit()
+            db.refresh(verification_record)
+            print('Created new verification record')
+        except Exception as e:
+            db.rollback()
+            raise e
 
 async def verify_verification_code(email: str, db: Session, verification_code: int) -> None:
     """
@@ -146,4 +153,22 @@ async def verify_verification_code(email: str, db: Session, verification_code: i
     except Exception as e:
         raise e
         
+async def get_code_record_by_email(email: str, db: Session) -> Verification | None:
+    verification_entry = db.query(Verification).filter(Verification.email == email).first()
+    print(verification_entry.email)
+    if verification_entry:
+        return verification_entry
+    else:
+        return None
+    
 
+async def change_user_password(email: str, password: str, db: Session) -> None:
+
+    user = await get_user_by_email(email, db)
+    user.password = password
+    try:
+        db.commit()
+        print("Password has changed")
+    except Exception as e:
+        db.rollback()
+        raise e

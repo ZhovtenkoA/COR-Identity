@@ -24,12 +24,12 @@ class User(Base):
     refresh_token = Column(String(250), nullable=True)
     # confirmed = Column(Boolean, default=False)
     role: Mapped[Enum] = Column("role", Enum(Role), default=Role.admin)
-    verification_code = Column(Integer, default=None)
+    # verification_code = Column(Integer, default=None)
 
 class Verification(Base):
     __tablename__ = "verification"
-
-    email = Column(String(250), unique=True, nullable=False, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    email = Column(String(250), unique=True, nullable=False)
     verification_code = Column(Integer, default=None)
 
 

@@ -42,3 +42,9 @@ class RecordResponse(RecordModel):
 class VerificationModel(BaseModel):
     email: EmailStr
     verification_code: int
+
+class ChangePasswordModel(BaseModel):
+    email: str
+    password: str = Field(min_length=4, max_length=10)
+    confirmed_password: str = Field(min_length=4, max_length=10)
+

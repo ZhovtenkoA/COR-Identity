@@ -17,7 +17,8 @@ from sqlalchemy.orm import Session
 from random import randint
 
 from cor_auth.database.db import get_db
-from cor_auth.schemas import UserModel, ResponseUser, TokenModel, EmailSchema, VerificationModel
+from cor_auth.database.models import Verification
+from cor_auth.schemas import UserModel, ResponseUser, TokenModel, EmailSchema, VerificationModel, ChangePasswordModel
 from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
 from cor_auth.services.email import send_email, send_email_code
@@ -202,6 +203,7 @@ async def request_email(
         )
     return {"message": "Check your email for confirmation."}
 
+
 # Маршрут для отправки кода подтверждения на почту пользователя
 @router.post("/send_verification_code")
 async def send_verification_code(
@@ -212,12 +214,21 @@ async def send_verification_code(
 
     verification_code = randint(100000, 999999)
 
+    # verification_entry = repository_users.get_code_record_by_email(body.email, db)
+    verification_entry = db.query(Verification).filter(Verification.email == body.email).first()
+    if verification_entry:
+        print(verification_entry)
+        print("Verification code already sent")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Verification code already sent"
+        )
+    
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Account already exists"
         )
-    if exist_user != None and exist_user.confirmed:
+    if exist_user and exist_user.confirmed:
         return {"message": "Your email is already confirmed"}
     
     if exist_user == None:
@@ -228,6 +239,7 @@ async def send_verification_code(
             verification_code
         )
         await repository_users.write_verification_code(email=body.email, db=db, verification_code=verification_code)
+
     return {"message": "Check your email for verification code."}
 
 # Маршрут подтверждения почты/кода
@@ -242,3 +254,46 @@ async def send_verification_code(
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid verification code")
+   
+    
+#forgot password route
+"""
+Забыли пароль - ввод почты - отправка кода на почту - ввод кода - ввод нового пароля (может повторный ввод пароля и сравнение)
+"""
+
+@router.post("/forgot password")
+async def forgot_password(
+    body: EmailSchema,
+    background_tasks: BackgroundTasks,
+    request: Request,
+    db: Session = Depends(get_db)):
+
+    verification_code = randint(100000, 999999)
+    exist_user = await repository_users.get_user_by_email(body.email, db)
+    if exist_user == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    if exist_user:
+        background_tasks.add_task(
+            send_email_code,
+            body.email,
+            request.base_url,
+            verification_code
+        )
+        await repository_users.write_verification_code(email=body.email, db=db, verification_code=verification_code)
+    return {"message": "Check your email for verification code."}
+
+
+@router.patch("/change password")
+async def change_password(body: ChangePasswordModel, db: Session = Depends(get_db)):
+    user = await repository_users.get_user_by_email(body.email, db)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    else:
+        if body.password == body.confirmed_password:
+            await repository_users.change_user_password(body.email, body.password, db)
+            return {"message": f"User {body.email} if changed his password"}
+        else:
+            print("Incorrect password input")
+            raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Incorrect password input")
