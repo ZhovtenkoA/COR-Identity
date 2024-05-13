@@ -53,6 +53,7 @@ input[type="submit"] {
     cursor: pointer;
 }
 
+
 input[type="submit"]:hover {
     background-color: #45a049;
 }
@@ -63,4 +64,14 @@ input[type="submit"]:hover {
     padding: 10px 20px;
     margin: 0 auto;
     display: block;
+}
+#verificationCodeWindow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+}
+input[type="button"].registration-button:hover {
+    background-color: #45a049;
 }
