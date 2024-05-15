@@ -73,7 +73,7 @@ def read_root():
     :return: A dictionary
     """
     return FileResponse("cor_auth/static/login.html")
-    # return {"message": "Rest API Cor-Auth"}
+
 
 
 @app.get("/api/healthchecker")

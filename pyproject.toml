@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cor-auth"
+name = "COR-Identity"
 version = "0.1.0"
 description = ""
 authors = ["ZhovtenkoA <127408550+ZhovtenkoA@users.noreply.github.com>"]
