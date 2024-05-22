@@ -90,18 +90,14 @@ async def login(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email"
         )
-    # if not user.confirmed:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED, detail="Email not confirmed"
-    #     )
     if not auth_service.verify_password(body.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
         )
     access_token = await auth_service.create_access_token(
-        data={"sub": user.email}, expires_delta=3600
+        data={"sub": user.email, "id": user.id}, expires_delta=3600
     )
-    refresh_token = await auth_service.create_refresh_token(data={"sub": user.email})
+    refresh_token = await auth_service.create_refresh_token(data={"sub": user.email, "id": user.id})
     await repository_users.update_token(user, refresh_token, db)
     return {
         "access_token": access_token,
@@ -138,8 +134,8 @@ async def refresh_token(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
         )
 
-    access_token = await auth_service.create_access_token(data={"sub": email})
-    refresh_token = await auth_service.create_refresh_token(data={"sub": email})
+    access_token = await auth_service.create_access_token(data={"sub": email, "id": user.id})
+    refresh_token = await auth_service.create_refresh_token(data={"sub": email, "id": user.id})
     user.refresh_token = refresh_token
     db.commit()
     await repository_users.update_token(user, refresh_token, db)
