@@ -10,8 +10,6 @@ class Settings(BaseSettings):
     mail_from: str = "Cor.Auth@EXAMPLE.COM"
     mail_port: int = 0
     mail_server: str = "MAIL_SERVER"
-    redis_host: str = "REDIS_HOST"
-    redis_port: int = 0
     pythonpath: str = "PYTHONPATH"
     encryption_key: str = "ENCRYPTION_KEY"
 
