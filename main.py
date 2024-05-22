@@ -1,15 +1,10 @@
 import time
 
-import redis.asyncio as redis
 import uvicorn
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from fastapi import FastAPI, Request, Depends, HTTPException, status
-from fastapi_limiter import FastAPILimiter
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_limiter import FastAPILimiter
-from sqlalchemy import text
-from sqlalchemy.orm import Session
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -40,10 +35,6 @@ async def startup():
     :return: A list of coroutines
     """
     print("------------- STARTUP --------------")
-    r = await redis.Redis(
-        host="localhost", port=6379, db=0, encoding="utf-8", decode_responses=True
-    )
-    await FastAPILimiter.init(r)
 
 
 @app.middleware("http")
@@ -73,7 +64,6 @@ def read_root():
     :return: A dictionary
     """
     return FileResponse("cor_auth/static/login.html")
-
 
 
 @app.get("/api/healthchecker")

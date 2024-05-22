@@ -26,6 +26,7 @@ class User(Base):
     role: Mapped[Enum] = Column("role", Enum(Role), default=Role.admin)
     # verification_code = Column(Integer, default=None)
 
+
 class Verification(Base):
     __tablename__ = "verification"
     id = Column(Integer, primary_key=True)

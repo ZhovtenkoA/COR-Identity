@@ -110,34 +110,44 @@ async def make_user_role(email: str, role: Role, db: Session) -> None:
         db.rollback()
         raise e
 
-async def write_verification_code(email: str, db: Session, verification_code: int) -> None:
+
+async def write_verification_code(
+    email: str, db: Session, verification_code: int
+) -> None:
     """
 
     :param email: str: Pass the email address of the user to be confirmed
     :param db: Session: Pass the database session into the function
     :return: None
     """
-    verification_record = db.query(Verification).filter(Verification.email == email).first()
+    verification_record = (
+        db.query(Verification).filter(Verification.email == email).first()
+    )
     if verification_record:
         verification_record.verification_code = verification_code
         try:
             db.commit()
-            print('Updated verification code in the existing record')
+            print("Updated verification code in the existing record")
         except Exception as e:
             db.rollback()
             raise e
     else:
-        verification_record = Verification(email=email, verification_code=verification_code)
+        verification_record = Verification(
+            email=email, verification_code=verification_code
+        )
         try:
             db.add(verification_record)
             db.commit()
             db.refresh(verification_record)
-            print('Created new verification record')
+            print("Created new verification record")
         except Exception as e:
             db.rollback()
             raise e
 
-async def verify_verification_code(email: str, db: Session, verification_code: int) -> None:
+
+async def verify_verification_code(
+    email: str, db: Session, verification_code: int
+) -> None:
     """
 
     :param email: str: Pass the email address of the user to be confirmed
@@ -145,22 +155,27 @@ async def verify_verification_code(email: str, db: Session, verification_code: i
     :return: None
     """
     try:
-        verification_record = db.query(Verification).filter(Verification.email == email).first()
+        verification_record = (
+            db.query(Verification).filter(Verification.email == email).first()
+        )
         if verification_record.verification_code == verification_code:
             return True
         else:
             None
     except Exception as e:
         raise e
-        
+
+
 async def get_code_record_by_email(email: str, db: Session) -> Verification | None:
-    verification_entry = db.query(Verification).filter(Verification.email == email).first()
+    verification_entry = (
+        db.query(Verification).filter(Verification.email == email).first()
+    )
     print(verification_entry.email)
     if verification_entry:
         return verification_entry
     else:
         return None
-    
+
 
 async def change_user_password(email: str, password: str, db: Session) -> None:
 
