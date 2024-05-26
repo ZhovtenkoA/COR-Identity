@@ -2,7 +2,11 @@
 <html>
     <head>
         <title>Авторизация и регистрация</title>
-        <link rel="stylesheet" type="text/css" href="static/styles.css">
+        
+        <meta name="google-signin-client_id" content="161352424929-s3ris9429m994vcm2m35epe6eu4538el.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <meta name="facebook-sdk-version" content="v15.0" />
+        <script src="https://connect.facebook.net/en_US/sdk.js"></script>
     </head>
 <body>
     <h1>Авторизация</h1>
@@ -12,8 +16,42 @@
             <label for="password">Пароль:</label>
             <input type="password" id="password" name="password" required><br>
             <input type="submit" value="Войти">
-        </form>
+
+            <link rel="stylesheet" type="text/css" href="\static\styles.css">
+           
+           <p> <div class="g-signin2" data-onsuccess="onSignIn"></div></p>
+
+           <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+        </form>   
+            
+
+
+        
     <h1>Регистрация</h1>
         <button onclick="window.location.href='/static/signup.html'" class="registration-button">Регистрация</button>
+        <div id="gSignInWrapper"> </div>
+            
+          
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '1580389042741794',
+              xfbml      : true,
+              version    : 'v15.0'
+            });
+          };
+        
+          (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "https://connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+           }(document, 'script', 'facebook-jssdk'));
+        </script>
+
+          
+        
+          
 </body>
 </html>
