@@ -9,6 +9,12 @@ from cor_auth.schemas import RecordResponse, RecordModel
 from cor_auth.services.roles import free_access, admin, admin_moderator
 from cor_auth.conf.config import settings
 
+"""
+- модуль связанный с зашифрованными записями
+- пожелание Тиграна
+- в аутентификации не используется 
+"""
+
 router = APIRouter(prefix="/records", tags=["Records"])
 encryption_key = settings.encryption_key
 
@@ -41,7 +47,6 @@ async def read_records(skip: int = 0, limit: int = 50, db: Session = Depends(get
 async def read_record(record_id: int, db: Session = Depends(get_db)):
     """
     Get a specific record by ID.
-
     :param record_id: The ID of the record.
     :type record_id: int
     :param db: The database session. Dependency on get_db.

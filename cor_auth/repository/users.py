@@ -17,6 +17,17 @@ async def get_user_by_email(email: str, db: Session) -> User | None:
     """
     return db.query(User).filter(User.email == email).first()
 
+async def get_user_by_uuid(uuid: str, db: Session) -> User | None:
+    """
+    The get_user_by_uuid function takes in an uuid and a database session,
+    then returns the user with that uuid.
+
+    :param uuid: str: Pass in the uuid of the user that we want to get
+    :param db: Session: Pass the database session to the function
+    :return: The first user found with the uuid specified
+    """
+    return db.query(User).filter(User.id == uuid).first()
+
 
 async def create_user(body: UserModel, db: Session) -> User:
     """
@@ -63,19 +74,6 @@ async def update_token(user: User, token: str | None, db: Session) -> None:
     db.commit()
 
 
-# async def confirmed_email(email: str, db: Session) -> None:
-#     """
-#     The confirmed_email function sets the confirmed field of a user to True.
-
-#     :param email: str: Pass the email address of the user to be confirmed
-#     :param db: Session: Pass the database session into the function
-#     :return: None
-#     """
-#     user = await get_user_by_email(email, db)
-#     user.confirmed = True
-#     db.commit()
-
-
 async def get_users(skip: int, limit: int, db: Session) -> list[User]:
     """
     The get_users function returns a list of all users from the database.
@@ -115,7 +113,6 @@ async def write_verification_code(
     email: str, db: Session, verification_code: int
 ) -> None:
     """
-
     :param email: str: Pass the email address of the user to be confirmed
     :param db: Session: Pass the database session into the function
     :return: None
@@ -149,7 +146,6 @@ async def verify_verification_code(
     email: str, db: Session, verification_code: int
 ) -> None:
     """
-
     :param email: str: Pass the email address of the user to be confirmed
     :param db: Session: Pass the database session into the function
     :return: None
@@ -159,22 +155,12 @@ async def verify_verification_code(
             db.query(Verification).filter(Verification.email == email).first()
         )
         if verification_record.verification_code == verification_code:
+            verification_record.email_confirmation = True
             return True
         else:
             None
     except Exception as e:
         raise e
-
-
-async def get_code_record_by_email(email: str, db: Session) -> Verification | None:
-    verification_entry = (
-        db.query(Verification).filter(Verification.email == email).first()
-    )
-    print(verification_entry.email)
-    if verification_entry:
-        return verification_entry
-    else:
-        return None
 
 
 async def change_user_password(email: str, password: str, db: Session) -> None:

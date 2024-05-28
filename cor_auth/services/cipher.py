@@ -3,6 +3,11 @@ from Crypto.Util.Padding import pad, unpad
 import base64
 import hashlib
 
+"""
+- блок шифрования, используется только для шифрования и дешифрования записей
+- пожелание Тиграна
+- в аутентификации не используется 
+"""
 
 def encrypt_data(data, key):
     aes_key = key

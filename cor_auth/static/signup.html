@@ -10,14 +10,83 @@
                 <label for="email">Электронная почта:</label>
                 <input type="email" id="email" name="email" required><br>
                 <label for="password">Пароль:</label>
-                <input type="password" id="password" name="password" minlength="4" maxlength="10" required><br>
+
+                <div class="password-container">
+                   <input type="password" id="password"  placeholder="Введите пароль" name="password" minlength="4" maxlength="10" required><br>
+                   <span class="toggle-password" data-target="#password" required>👁️</span>
+                </div>
+                
+
+                <br>
+                <div class="password-container">
+                    <label for="confirm-password">Повторите пароль:</label>
+                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль">
+                    <span class="toggle-password" data-target="#confirm-password" required>👁️</span>
+                </div>
+                
+                <br>
+
+
+              <!--  <br>
+                <div class="password-container"></div>
+                <label for="confirm-password">Повторите пароль:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+               
+                </div>
+                <br> -->
+
+
+               
+
                 <input type="button" value="Отправить код на имейл" onclick="sendVerificationCode()">
-                <input type="submit" value="Зарегистрироваться">
+                <br>   <input type="submit" value="Зарегистрироваться"> <br>
             </form>
             <div id="verificationCodeWindow" style="display: none;">
                 <input type="text" id="verificationCodeInput">
                 <input type="button" value="Подтвердить" onclick="verifyVerificationCode()">
             </div>
+
+          
+            <script>
+                const togglePasswordIcons = document.querySelectorAll('.toggle-password');
+        
+                togglePasswordIcons.forEach(icon => {
+                    icon.addEventListener('click', () => {
+                        const target = document.querySelector(icon.getAttribute('data-target'));
+                        const type = target.getAttribute('type') === 'password' ? 'text' : 'password';
+                        target.setAttribute('type', type);
+                    });
+                });
+            </script>
+
+
+
+
+            <script>
+                const passwordInput = document.getElementById('password');
+                const confirmPasswordInput = document.getElementById('confirm-password');
+
+               
+
+              
+
+
+
+                const form = document.querySelector('form');
+            
+                form.addEventListener('submit', (event) => {
+                  event.preventDefault();
+            
+                  if (passwordInput.value !== confirmPasswordInput.value) {
+                    alert('Пароли не совпадают!');
+                  } else {
+                    alert('Пароли совпадают');
+                  }
+                });
+              </script>
+               
+
+
 
         <script>
             document.getElementById("registrationForm").addEventListener("submit", function(event) {

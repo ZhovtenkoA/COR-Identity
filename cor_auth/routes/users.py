@@ -41,21 +41,13 @@ async def get_all_users(
 async def assign_role(email: EmailStr, role: Role, db: Session = Depends(get_db)):
     """
     **Assign a role to a user by email.**
-
     This route allows to assign the selected role to a user by their email.
-
     Level of Access:
-
     - Administrator
-
     :param email: EmailStr: Email of the user to whom you want to assign the role.
-
     :param role: Role: The selected role for the assignment (Administrator, Moderator or User).
-
     :param db: Session: Database Session.
-
     :return: Message about successful role change.
-
     :rtype: dict
     """
     user = await users.get_user_by_email(email, db)

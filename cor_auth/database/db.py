@@ -9,7 +9,7 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-# Dependecy
+# Dependency
 def get_db():
     """
     The get_db function opens a new database connection if there is none yet for the current application context.
