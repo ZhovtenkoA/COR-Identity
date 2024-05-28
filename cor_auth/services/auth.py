@@ -108,9 +108,8 @@ class Auth:
                 refresh_token, self.SECRET_KEY, algorithms=[self.ALGORITHM]
             )
             if payload["scope"] == "refresh_token":
-                email = payload["sub"]
                 id = payload["id"]
-                return email
+                return id
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid scope for token",
@@ -141,56 +140,18 @@ class Auth:
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             if payload["scope"] == "access_token":
-                email = payload["sub"]
-                if email is None:
+                id = payload["id"]
+                if id is None:
                     raise credentials_exception
             else:
                 raise credentials_exception
         except JWTError as e:
             raise credentials_exception
 
-        user = await repository_users.get_user_by_email(email, db)
+        user = await repository_users.get_user_by_uuid(id, db)
         if user is None:
             raise credentials_exception
         return user
-
-    # def create_email_token(self, data: dict):
-    #     """
-    #     The create_email_token function takes a dictionary of data and returns a JWT token.
-    #         The token is encoded with the SECRET_KEY and ALGORITHM defined in the class.
-    #         The iat (issued at) claim is set to datetime.utcnow() and exp (expiration time)
-    #         claim is set to 7 days from now.
-
-    #     :param self: Represent the instance of the class
-    #     :param data: dict: Pass the data to be encoded
-    #     :return: A token that is a byte string
-    #     """
-    #     to_encode = data.copy()
-    #     expire = datetime.utcnow() + timedelta(days=7)
-    #     to_encode.update({"iat": datetime.utcnow(), "exp": expire})
-    #     token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
-    #     return token
-
-    # async def get_email_from_token(self, token: str):
-    #     """
-    #     The get_email_from_token function takes a token as an argument and returns the email address associated with that token.
-    #     The function first decodes the token using jwt.decode, which is part of PyJWT, a Python library for encoding and decoding JSON Web Tokens (JWTs).
-    #     If successful, it will return the email address associated with that JWT.
-
-    #     :param self: Represent the instance of the class
-    #     :param token: str: Pass the token to the function
-    #     :return: The email address from the token
-    #     """
-    #     try:
-    #         payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
-    #         email = payload["sub"]
-    #         return email
-    #     except JWTError as e:
-    #         print(e)
-    #         raise HTTPException(
-    #             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-    #             detail="Invalid token for email verification",
-    #         )
 
 
 auth_service = Auth()

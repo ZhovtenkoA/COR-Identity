@@ -59,13 +59,13 @@ async def signup(
         )
     body.password = auth_service.get_password_hash(body.password)
     new_user = await repository_users.create_user(body, db)
+    print(f"{body.email} user successfully created")
     return {"user": new_user, "detail": "User successfully created"}
 
 
 @router.post(
     "/login",
     response_model=TokenModel,
-    description="No more than 10 requests per minute",
 )
 async def login(
     body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
@@ -87,9 +87,9 @@ async def login(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
         )
     access_token = await auth_service.create_access_token(
-        data={"sub": user.email, "id": user.id}, expires_delta=3600
+        data={"id": user.id}, expires_delta=3600
     )
-    refresh_token = await auth_service.create_refresh_token(data={"sub": user.email, "id": user.id})
+    refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     await repository_users.update_token(user, refresh_token, db)
     return {
         "access_token": access_token,
@@ -101,8 +101,6 @@ async def login(
 @router.get(
     "/refresh_token",
     response_model=TokenModel,
-    #description="No more than 10 requests per minute",
-    #dependencies=[Depends(RateLimiter(times=10, seconds=60))],
 )
 async def refresh_token(
     credentials: HTTPAuthorizationCredentials = Security(security),
@@ -118,16 +116,16 @@ async def refresh_token(
     :return: A new access token and a new refresh token
     """
     token = credentials.credentials
-    email = await auth_service.decode_refresh_token(token)
-    user = await repository_users.get_user_by_email(email, db)
+    id = await auth_service.decode_refresh_token(token)
+    user = await repository_users.get_user_by_uuid(id, db)
     if user.refresh_token != token:
         await repository_users.update_token(user, None, db)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
         )
 
-    access_token = await auth_service.create_access_token(data={"sub": email, "id": user.id})
-    refresh_token = await auth_service.create_refresh_token(data={"sub": email, "id": user.id})
+    access_token = await auth_service.create_access_token(data={"id": user.id})
+    refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     user.refresh_token = refresh_token
     db.commit()
     await repository_users.update_token(user, refresh_token, db)
@@ -158,6 +156,7 @@ async def send_verification_code(
         background_tasks.add_task(
             send_email_code, body.email, request.base_url, verification_code
         )
+        print("Check your email for verification code.")
         await repository_users.write_verification_code(
             email=body.email, db=db, verification_code=verification_code
         )
