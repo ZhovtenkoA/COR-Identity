@@ -135,6 +135,7 @@ async def refresh_token(
         "token_type": "bearer",
     }
 
+
 # Маршрут для отправки кода подтверждения на почту пользователя
 @router.post("/send_verification_code")
 async def send_verification_code(
@@ -187,6 +188,8 @@ async def send_verification_code(
 """
 Забыли пароль -> ввод почты -> отправка кода на почту -> ввод кода -> ввод нового пароля (может повторный ввод пароля и сравнение)
 """
+
+
 @router.post("/forgot password")
 async def forgot_password(
     body: EmailSchema,

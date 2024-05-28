@@ -13,6 +13,7 @@ from cor_auth.services.cipher import encrypt_data, decrypt_data, generate_aes_ke
 - в аутентификации не используется 
 """
 
+
 async def get_records(skip: int, limit: int, db: Session) -> List[Record]:
     """
     Get a list of records from the database.

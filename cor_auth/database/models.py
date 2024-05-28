@@ -25,13 +25,12 @@ class User(Base):
     role: Mapped[Enum] = Column("role", Enum(Role), default=Role.admin)
 
 
-
 class Verification(Base):
     __tablename__ = "verification"
     id = Column(Integer, primary_key=True)
     email = Column(String(250), unique=True, nullable=False)
     verification_code = Column(Integer, default=None)
-    email_confirmation = Column(Boolean, default= False)
+    email_confirmation = Column(Boolean, default=False)
 
 
 class Record(Base):

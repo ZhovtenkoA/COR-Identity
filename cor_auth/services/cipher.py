@@ -9,6 +9,7 @@ import hashlib
 - в аутентификации не используется 
 """
 
+
 def encrypt_data(data, key):
     aes_key = key
     cipher = AES.new(aes_key, AES.MODE_CBC)
