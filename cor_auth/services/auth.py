@@ -4,7 +4,7 @@ from jose import JWTError, jwt
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from sqlalchemy.orm import Session
 
 from cor_auth.database.db import get_db
@@ -35,7 +35,6 @@ class Auth:
         """
         The get_password_hash function takes a password as input and returns the hash of that password.
             The function uses the pwd_context object to generate a hash from the given password.
-
         :param self: Represent the instance of the class
         :param password: str: Pass the password into the function
         :return: A hash of the password
@@ -47,8 +46,6 @@ class Auth:
     ):
         """
         The create_access_token function creates a new access token for the user.
-
-
         :param self: Represent the instance of the class
         :param data: dict: Pass the data to be encoded
         :param expires_delta: Optional[float]: Set the time limit for the token
@@ -56,11 +53,11 @@ class Auth:
         """
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.utcnow() + timedelta(seconds=expires_delta)
+            expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
         else:
-            expire = datetime.utcnow() + timedelta(minutes=60)
+            expire = datetime.now(timezone.utc) + timedelta(minutes=60)
         to_encode.update(
-            {"iat": datetime.utcnow(), "exp": expire, "scope": "access_token"}
+            {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "access_token"}
         )
         encoded_access_token = jwt.encode(
             to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM
@@ -84,11 +81,11 @@ class Auth:
         """
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.utcnow() + timedelta(seconds=expires_delta)
+            expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
         else:
-            expire = datetime.utcnow() + timedelta(days=7)
+            expire = datetime.now(timezone.utc) + timedelta(days=7)
         to_encode.update(
-            {"iat": datetime.utcnow(), "exp": expire, "scope": "refresh_token"}
+            {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "refresh_token"}
         )
         encoded_refresh_token = jwt.encode(
             to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM
@@ -112,6 +109,7 @@ class Auth:
             )
             if payload["scope"] == "refresh_token":
                 email = payload["sub"]
+                id = payload["id"]
                 return email
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -156,43 +154,43 @@ class Auth:
             raise credentials_exception
         return user
 
-    def create_email_token(self, data: dict):
-        """
-        The create_email_token function takes a dictionary of data and returns a JWT token.
-            The token is encoded with the SECRET_KEY and ALGORITHM defined in the class.
-            The iat (issued at) claim is set to datetime.utcnow() and exp (expiration time)
-            claim is set to 7 days from now.
+    # def create_email_token(self, data: dict):
+    #     """
+    #     The create_email_token function takes a dictionary of data and returns a JWT token.
+    #         The token is encoded with the SECRET_KEY and ALGORITHM defined in the class.
+    #         The iat (issued at) claim is set to datetime.utcnow() and exp (expiration time)
+    #         claim is set to 7 days from now.
 
-        :param self: Represent the instance of the class
-        :param data: dict: Pass the data to be encoded
-        :return: A token that is a byte string
-        """
-        to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(days=7)
-        to_encode.update({"iat": datetime.utcnow(), "exp": expire})
-        token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
-        return token
+    #     :param self: Represent the instance of the class
+    #     :param data: dict: Pass the data to be encoded
+    #     :return: A token that is a byte string
+    #     """
+    #     to_encode = data.copy()
+    #     expire = datetime.utcnow() + timedelta(days=7)
+    #     to_encode.update({"iat": datetime.utcnow(), "exp": expire})
+    #     token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
+    #     return token
 
-    async def get_email_from_token(self, token: str):
-        """
-        The get_email_from_token function takes a token as an argument and returns the email address associated with that token.
-        The function first decodes the token using jwt.decode, which is part of PyJWT, a Python library for encoding and decoding JSON Web Tokens (JWTs).
-        If successful, it will return the email address associated with that JWT.
+    # async def get_email_from_token(self, token: str):
+    #     """
+    #     The get_email_from_token function takes a token as an argument and returns the email address associated with that token.
+    #     The function first decodes the token using jwt.decode, which is part of PyJWT, a Python library for encoding and decoding JSON Web Tokens (JWTs).
+    #     If successful, it will return the email address associated with that JWT.
 
-        :param self: Represent the instance of the class
-        :param token: str: Pass the token to the function
-        :return: The email address from the token
-        """
-        try:
-            payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
-            email = payload["sub"]
-            return email
-        except JWTError as e:
-            print(e)
-            raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="Invalid token for email verification",
-            )
+    #     :param self: Represent the instance of the class
+    #     :param token: str: Pass the token to the function
+    #     :return: The email address from the token
+    #     """
+    #     try:
+    #         payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+    #         email = payload["sub"]
+    #         return email
+    #     except JWTError as e:
+    #         print(e)
+    #         raise HTTPException(
+    #             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    #             detail="Invalid token for email verification",
+    #         )
 
 
 auth_service = Auth()

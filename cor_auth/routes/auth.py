@@ -17,7 +17,6 @@ from sqlalchemy.orm import Session
 from random import randint
 
 from cor_auth.database.db import get_db
-from cor_auth.database.models import Verification
 from cor_auth.schemas import (
     UserModel,
     ResponseUser,
@@ -28,7 +27,7 @@ from cor_auth.schemas import (
 )
 from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
-from cor_auth.services.email import send_email, send_email_code
+from cor_auth.services.email import send_email_code
 from cor_auth.conf.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Authorization"])
@@ -102,8 +101,8 @@ async def login(
 @router.get(
     "/refresh_token",
     response_model=TokenModel,
-    description="No more than 10 requests per minute",
-    dependencies=[Depends(RateLimiter(times=10, seconds=60))],
+    #description="No more than 10 requests per minute",
+    #dependencies=[Depends(RateLimiter(times=10, seconds=60))],
 )
 async def refresh_token(
     credentials: HTTPAuthorizationCredentials = Security(security),
@@ -137,41 +136,6 @@ async def refresh_token(
         "refresh_token": refresh_token,
         "token_type": "bearer",
     }
-
-
-# @router.post("/request_email", description="No more than 10 requests per minute")
-# async def request_email(
-#     body: EmailSchema,
-#     background_tasks: BackgroundTasks,
-#     request: Request,
-#     db: Session = Depends(get_db),
-# ):
-#     """
-#     The request_email function is used to send an email to the user with a link that will allow them
-#     to confirm their email address. The function takes in the body of the request, which should be a JSON object
-#     with one key: &quot;email&quot;. This key's value should be set to the user's email address. If this is not provided,
-#     the server will return an error message and status code 400 (Bad Request). If it is provided, then we check if
-#     the user has already confirmed their account by checking if they have been assigned a confirmation token or not.
-#     If they have already confirmed their account, then
-
-#     :param body: EmailSchema: Validate the data sent in the request body
-#     :param background_tasks: BackgroundTasks: Add a task to the background tasks queue
-#     :param request: Request: Get the base url of the server,
-#     :param db: Session: Pass the database session to the repository layer
-#     :return: A dict with a message
-#     """
-#     user = await repository_users.get_user_by_email(body.email, db)
-
-#     if user.confirmed:
-#         return {"message": "Your email is already confirmed"}
-#     if user:
-#         background_tasks.add_task(
-#             send_email,
-#             user.email,
-#             request.base_url,
-#         )
-#     return {"message": "Check your email for confirmation."}
-
 
 # Маршрут для отправки кода подтверждения на почту пользователя
 @router.post("/send_verification_code")
@@ -222,7 +186,7 @@ async def send_verification_code(
 
 # forgot password route
 """
-Забыли пароль - ввод почты - отправка кода на почту - ввод кода - ввод нового пароля (может повторный ввод пароля и сравнение)
+Забыли пароль -> ввод почты -> отправка кода на почту -> ввод кода -> ввод нового пароля (может повторный ввод пароля и сравнение)
 """
 @router.post("/forgot password")
 async def forgot_password(
