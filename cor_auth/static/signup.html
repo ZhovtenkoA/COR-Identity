@@ -12,15 +12,15 @@
                 <label for="password">Пароль:</label>
 
                 <div class="password-container">
-                   <input type="password" id="password"  placeholder="Введите пароль" name="password" minlength="4" maxlength="10" required><br>
+                   <input type="password" id="password"  placeholder="Введите пароль" name="password" minlength="4" maxlength="10" required>
                    <span class="toggle-password" data-target="#password" required>👁️</span>
                 </div>
                 
 
                 <br>
-                <div class="password-container">
-                    <label for="confirm-password">Повторите пароль:</label>
-                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль">
+                <label for="confirm-password">Повторите пароль:</label>
+                <div class="password-container">      
+                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль" minlength="4" maxlength="10">
                     <span class="toggle-password" data-target="#confirm-password" required>👁️</span>
                 </div>
                 
@@ -65,13 +65,6 @@
             <script>
                 const passwordInput = document.getElementById('password');
                 const confirmPasswordInput = document.getElementById('confirm-password');
-
-               
-
-              
-
-
-
                 const form = document.querySelector('form');
             
                 form.addEventListener('submit', (event) => {
