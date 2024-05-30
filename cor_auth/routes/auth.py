@@ -136,8 +136,8 @@ async def refresh_token(
     }
 
 
-# Маршрут для отправки кода подтверждения на почту пользователя
-@router.post("/send_verification_code")
+
+@router.post("/send_verification_code") # Маршрут проверки почты в случае если забыли пароль 
 async def send_verification_code(
     body: EmailSchema,
     background_tasks: BackgroundTasks,
@@ -167,16 +167,19 @@ async def send_verification_code(
 
 # Маршрут подтверждения почты/кода
 @router.post("/confirm_email")
-async def send_verification_code(
+async def confirm_email(
     body: VerificationModel, db: Session = Depends(get_db)
 ):
 
     ver_code = await repository_users.verify_verification_code(
         body.email, db, body.verification_code
     )
+    confirmation = False
     if ver_code:
+        confirmation = True
         print("Your email is confirmed")
-        return True
+        return {"message": "Your email is confirmed", # Сообщение для JS о том что имейл подтвержден
+                "confirmation": confirmation}
     else:
         print("Invalid verification code")
         raise HTTPException(
@@ -190,8 +193,8 @@ async def send_verification_code(
 """
 
 
-@router.post("/forgot password")
-async def forgot_password(
+@router.post("/forgot password") # Маршрут проверки почты в случае если забыли пароль 
+async def forgot_password_send_verification_code(
     body: EmailSchema,
     background_tasks: BackgroundTasks,
     request: Request,
@@ -200,7 +203,7 @@ async def forgot_password(
 
     verification_code = randint(100000, 999999)
     exist_user = await repository_users.get_user_by_email(body.email, db)
-    if exist_user == None:
+    if exist_user == None:  
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
