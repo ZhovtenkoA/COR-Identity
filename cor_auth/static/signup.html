@@ -3,49 +3,44 @@
     <head>
         <title>Регистрация</title>
         <link rel="stylesheet" type="text/css" href="styles.css">
+
+    
     </head>
     <body>
         <h1>Регистрация</h1>
             <form id="registrationForm">
                 <label for="email">Электронная почта:</label>
                 <input type="email" id="email" name="email" required><br>
-                <label for="password">Пароль:</label>
-
-                <div class="password-container">
-                   <input type="password" id="password"  placeholder="Введите пароль" name="password" minlength="4" maxlength="10" required>
-                   <span class="toggle-password" data-target="#password" required>👁️</span>
-                </div>
                 
+                   <br>
+ 
+                    <div class="password-container" style="display: none;" >
+                       <label for="password">Пароль: </label>    
+                       <input type="password" id="password"  placeholder="Введите пароль" name="password"  minlength="4" maxlength="10" required>
+                       <span class="toggle-password" data-target="#password" required>👁️</span>
+                    </div>
 
-                <br>
-                <label for="confirm-password">Повторите пароль:</label>
-                <div class="password-container">      
-                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль" minlength="4" maxlength="10">
+                    <br>
+                    
+                <div class="password-container" style="display: none;">      
+                    <label for="confirm-password">Повторите пароль:</label>
+                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль"  minlength="4" maxlength="10">
                     <span class="toggle-password" data-target="#confirm-password" required>👁️</span>
+                    <br>
+                    <input type="submit" value="Зарегистрироваться">
                 </div>
-                
+
+
+                   
                 <br>
-
-
-              <!--  <br>
-                <div class="password-container"></div>
-                <label for="confirm-password">Повторите пароль:</label>
-                <input type="password" id="confirm-password" name="confirm-password" required>
-               
-                </div>
-                <br> -->
-
-
-               
-
-                <input type="button" value="Отправить код на имейл" onclick="sendVerificationCode()">
-                <br>   <input type="submit" value="Зарегистрироваться"> <br>
-            </form>
+                <input type="button" id="sendVerifCode" value="Отправить код на имейл" onclick="sendVerificationCode()">
+             <br>
+          
             <div id="verificationCodeWindow" style="display: none;">
                 <input type="text" id="verificationCodeInput">
-                <input type="button" value="Подтвердить" onclick="verifyVerificationCode()">
+                <input type="button" id="ConfirmationCodeInput"  value="Подтвердить" onclick="verifyVerificationCode()">
             </div>
-
+        </form>
           
             <script>
                 const togglePasswordIcons = document.querySelectorAll('.toggle-password');
@@ -78,6 +73,34 @@
                 });
               </script>
                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -126,6 +149,7 @@
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                     // Обработка успешного ответа от сервера
+                    alert('Код подтверждения отправлен на Вашу почту!');
                     console.log("Код подтверждения отправлен на вашу электронную почту.");
                     showVerificationCodeInput(); // Показать область для ввода кода
                     } else {
@@ -159,9 +183,21 @@
                         if (xhr.status === 200) {
                             // Обработка успешного ответа от сервера
                             console.log("Код подтверждения верный.");
+                            alert('Ваша почта успешно подтверждена!!!');
+                            
+                                const containers = document.querySelectorAll('.password-container');
+                                containers.forEach(container => {  container.style.display = 'block';});
+                                document.getElementById('sendVerifCode').style.display = 'none';
+                                document.getElementById('ConfirmationCodeInput').style.display = 'none';
+                                document.getElementById('verificationCodeInput').style.display = 'none';  
+                            
                         } else {
                             // Обработка ошибки
                             console.error("Неверный код подтверждения.");
+                            alert('Неверный код подтверждения!!!');
+
+                            const containers = document.querySelectorAll('.password-container');
+                                   containers.forEach(container => { container.style.display = 'none';   });
                         }
                     }
                 };

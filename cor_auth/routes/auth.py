@@ -137,7 +137,7 @@ async def refresh_token(
 
 
 
-@router.post("/send_verification_code") # Маршрут проверки почты в случае если забыли пароль 
+@router.post("/send_verification_code") # Маршрут проверки почты в случае если это новая регистрация 
 async def send_verification_code(
     body: EmailSchema,
     background_tasks: BackgroundTasks,
@@ -221,7 +221,7 @@ async def forgot_password_send_verification_code(
 async def change_password(body: ChangePasswordModel, db: Session = Depends(get_db)):
     user = await repository_users.get_user_by_email(body.email, db)
     if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND ,detail="User not found")
     else:
         if body.password == body.confirmed_password:
             await repository_users.change_user_password(body.email, body.password, db)

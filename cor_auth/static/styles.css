@@ -87,6 +87,14 @@ input[type="submit"]:hover {
     cursor: pointer;
 }
 
+
+.hidden {
+    display: none;
+}
+
+
+
+
 /* Кнопка Google */
 .customGPlusSignIn {
     display: flex;
