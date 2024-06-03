@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings
-from cryptography.hazmat.primitives import serialization
 
 
 class Settings(BaseSettings):
