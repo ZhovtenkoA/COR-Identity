@@ -48,4 +48,4 @@ class VerificationModel(BaseModel):
 class ChangePasswordModel(BaseModel):
     email: str
     password: str = Field(min_length=4, max_length=10)
-    confirmed_password: str = Field(min_length=4, max_length=10)
+    

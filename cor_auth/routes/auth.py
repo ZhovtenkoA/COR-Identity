@@ -223,7 +223,7 @@ async def change_password(body: ChangePasswordModel, db: Session = Depends(get_d
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND ,detail="User not found")
     else:
-        if body.password == body.confirmed_password:
+        if body.password:
             await repository_users.change_user_password(body.email, body.password, db)
             return {"message": f"User {body.email} if changed his password"}
         else:
