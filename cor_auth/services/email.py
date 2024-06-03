@@ -22,7 +22,7 @@ conf = ConnectionConfig(
 )
 
 
-async def send_email_code(email: EmailStr, host: str, verification_code):
+async def send_email_code(email: EmailStr, host: str, verification_code): #registration
     """
     The send_email function sends an email to the user with a link to confirm their email address.
         Args:
@@ -33,7 +33,7 @@ async def send_email_code(email: EmailStr, host: str, verification_code):
     :param host: str: Pass the hostname of the server to the template
     :return: A coroutine object
     """
-    print("sending email...")
+    print("Sending email...")
     try:
         message = MessageSchema(
             subject="Confirm your email ",
@@ -47,6 +47,35 @@ async def send_email_code(email: EmailStr, host: str, verification_code):
 
         fm = FastMail(conf)
         await fm.send_message(message, template_name="email_templates.html")
-        print("sending email done")
+        print("Sending email done")
+    except ConnectionErrors as err:
+        print(err)
+
+async def send_email_code_forgot_password(email: EmailStr, host: str, verification_code): #forgot password
+    """
+    The send_email function sends an email to the user with a link to confirm their email address.
+        Args:
+            email (str): The user's email address.
+            host (str): The hostname that will be used in constructing a URL for confirming their account registration.
+
+    :param email: EmailStr: Validate the email address
+    :param host: str: Pass the hostname of the server to the template
+    :return: A coroutine object
+    """
+    print("Sending forgot password email...")
+    try:
+        message = MessageSchema(
+            subject="Forgot Password",
+            recipients=[email],
+            template_body={
+                "host": host,
+                "code": verification_code,
+            },
+            subtype=MessageType.html,
+        )
+
+        fm = FastMail(conf)
+        await fm.send_message(message, template_name="forgot_password_email_template.html")
+        print("Sending forgot password email done")
     except ConnectionErrors as err:
         print(err)

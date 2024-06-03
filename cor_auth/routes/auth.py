@@ -27,7 +27,7 @@ from cor_auth.schemas import (
 )
 from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
-from cor_auth.services.email import send_email_code
+from cor_auth.services.email import send_email_code, send_email_code_forgot_password
 from cor_auth.conf.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Authorization"])
@@ -209,7 +209,7 @@ async def forgot_password_send_verification_code(
         )
     if exist_user:
         background_tasks.add_task(
-            send_email_code, body.email, request.base_url, verification_code
+            send_email_code_forgot_password, body.email, request.base_url, verification_code
         )
         await repository_users.write_verification_code(
             email=body.email, db=db, verification_code=verification_code
