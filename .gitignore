@@ -144,6 +144,10 @@ dmypy.json
 # Database
 .db
 
+
+#keys
+.pem
+
 # Cython debug symbols
 cython_debug/
 

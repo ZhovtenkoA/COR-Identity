@@ -28,11 +28,11 @@ from cor_auth.schemas import (
 from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
 from cor_auth.services.email import send_email_code, send_email_code_forgot_password
-from cor_auth.conf.config import settings
+from cor_auth.conf.config import settings, private_key
 
 router = APIRouter(prefix="/auth", tags=["Authorization"])
 security = HTTPBearer()
-SECRET_KEY = settings.secret_key
+SECRET_KEY = private_key
 ALGORITHM = settings.algorithm
 
 

@@ -9,12 +9,12 @@ from sqlalchemy.orm import Session
 
 from cor_auth.database.db import get_db
 from cor_auth.repository import users as repository_users
-from cor_auth.conf.config import settings
+from cor_auth.conf.config import settings, private_key
 
 
 class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    SECRET_KEY = settings.secret_key
+    SECRET_KEY = private_key
     ALGORITHM = settings.algorithm
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -59,9 +59,8 @@ class Auth:
         to_encode.update(
             {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "access_token"}
         )
-        encoded_access_token = jwt.encode(
-            to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM
-        )
+
+        encoded_access_token = jwt.encode(to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM)
         print(encoded_access_token)
         return encoded_access_token
 
@@ -87,9 +86,8 @@ class Auth:
         to_encode.update(
             {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "refresh_token"}
         )
-        encoded_refresh_token = jwt.encode(
-            to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM
-        )
+
+        encoded_refresh_token = jwt.encode(to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM)
         return encoded_refresh_token
 
     async def decode_refresh_token(self, refresh_token: str):
@@ -104,9 +102,9 @@ class Auth:
         :return: The email of the user who requested it
         """
         try:
-            payload = jwt.decode(
-                refresh_token, self.SECRET_KEY, algorithms=[self.ALGORITHM]
-            )
+
+            payload = jwt.decode(refresh_token, key=self.SECRET_KEY, algorithms=self.ALGORITHM)
+
             if payload["scope"] == "refresh_token":
                 id = payload["id"]
                 return id
@@ -138,7 +136,9 @@ class Auth:
             headers={"WWW-Authenticate": "Bearer"},
         )
         try:
-            payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
+
+            payload = jwt.decode(token, key=self.SECRET_KEY, algorithms=self.ALGORITHM)
+
             if payload["scope"] == "access_token":
                 id = payload["id"]
                 if id is None:
