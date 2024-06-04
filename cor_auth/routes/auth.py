@@ -60,7 +60,7 @@ async def signup(
     body.password = auth_service.get_password_hash(body.password)
     new_user = await repository_users.create_user(body, db)
     print(f"{body.email} user successfully created")
-    return {"user": new_user, "detail": "User successfully created"}
+    return {"user": new_user, "detail": "User successfully created"}        
 
 
 @router.post(

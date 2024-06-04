@@ -110,13 +110,14 @@
                     console.log("Регистрация прошла успешно!");
                     } else {
                     // Обработка ошибки
-                    
                     console.error("Произошла ошибка при регистрации.");
                     }
                 }
                 };
 
                 xhr.send(JSON.stringify(formDataJson));
+                // Редирект на главную страницу
+                //window.location.href = "http://127.0.0.1:8000/";
             });
 
             function sendVerificationCode() {
