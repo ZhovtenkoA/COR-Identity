@@ -80,11 +80,11 @@ async def login(
     user = await repository_users.get_user_by_email(body.username, db)
     if user is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден / неверный имейл"    #Возврат сообщения что пользователь не найден/неправильный имейл
         )
     if not auth_service.verify_password(body.password, user.password):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный пароль"
         )
     access_token = await auth_service.create_access_token(
         data={"id": user.id}, expires_delta=3600
@@ -150,9 +150,11 @@ async def send_verification_code(
 
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
+        #return {"message": "Пользователь уже существует"}
+
         print("Account already exists")
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="Account already exists"
+            status_code=status.HTTP_409_CONFLICT, detail=f"Пользователь  '{body.email}' уже существует"
         )
 
     if exist_user == None:
@@ -207,7 +209,7 @@ async def forgot_password_send_verification_code(
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user == None:  
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не существует"
         )
     if exist_user:
         background_tasks.add_task(
@@ -223,11 +225,11 @@ async def forgot_password_send_verification_code(
 async def change_password(body: ChangePasswordModel, db: Session = Depends(get_db)):
     user = await repository_users.get_user_by_email(body.email, db)
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND ,detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND ,detail="Пользователь не найден")
     else:
         if body.password:
             await repository_users.change_user_password(body.email, body.password, db)
-            return {"message": f"User {body.email} if changed his password"}
+            return {"message": f"User '{body.email}' changed his password"}
         else:
             print("Incorrect password input")
             raise HTTPException(

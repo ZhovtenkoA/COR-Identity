@@ -1,4 +1,4 @@
-body {
+body ,html {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
     padding: 20px;
@@ -92,7 +92,10 @@ input[type="submit"]:hover {
     display: none;
 }
 
-
+.message {
+    margin-top: 20px;
+    font-weight: bold;
+}
 
 
 /* Кнопка Google */

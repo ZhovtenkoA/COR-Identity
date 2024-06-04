@@ -34,6 +34,7 @@
                    
                 <br>
                 <input type="button" id="sendVerifCode" value="Отправить код на имейл" onclick="sendVerificationCode()">
+                <div id="message" class="message"></div>
              <br>
           
             <div id="verificationCodeWindow" style="display: none;">
@@ -86,24 +87,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <script>
             document.getElementById("registrationForm").addEventListener("submit", function(event) {
                 event.preventDefault();
@@ -127,6 +110,7 @@
                     console.log("Регистрация прошла успешно!");
                     } else {
                     // Обработка ошибки
+                    
                     console.error("Произошла ошибка при регистрации.");
                     }
                 }
@@ -138,7 +122,7 @@
             function sendVerificationCode() {
                 var form = document.getElementById("registrationForm");
                 var emailInput = form.elements.email;
-
+                var messageDiv = document.getElementById("message");
                 var email = emailInput.value;
 
                 var xhr = new XMLHttpRequest();
@@ -152,8 +136,15 @@
                     alert('Код подтверждения отправлен на Вашу почту!');
                     console.log("Код подтверждения отправлен на вашу электронную почту.");
                     showVerificationCodeInput(); // Показать область для ввода кода
+                    document.getElementById('message').style.display = 'none';  
                     } else {
                     // Обработка ошибки
+                               // Обработка ошибки
+                        var error = JSON.parse(xhr.responseText);
+                        console.error("Произошла ошибка при отправке кода подтверждения на почту.");
+                        messageDiv.innerText = error.detail || "Произошла ошибка при отправке кода подтверждения на почту.";
+                        messageDiv.style.color = 'red';
+
                     console.error("Произошла ошибка при отправке кода подтверждения на почту.");
                         }
                     }
@@ -165,6 +156,7 @@
             function showVerificationCodeInput() {
                 var verificationCodeWindow = document.getElementById("verificationCodeWindow");
                 verificationCodeWindow.style.display = "block";
+                
             }
 
             function verifyVerificationCode() {
@@ -190,7 +182,7 @@
                                 document.getElementById('sendVerifCode').style.display = 'none';
                                 document.getElementById('ConfirmationCodeInput').style.display = 'none';
                                 document.getElementById('verificationCodeInput').style.display = 'none';  
-                            
+                                document.getElementById('message').style.display = 'none';  
                         } else {
                             // Обработка ошибки
                             console.error("Неверный код подтверждения.");
