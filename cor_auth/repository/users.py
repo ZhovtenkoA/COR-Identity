@@ -4,6 +4,7 @@ import uuid
 from cor_auth.database.models import User, Role, Verification
 from cor_auth.schemas import UserModel
 from sqlalchemy import func
+from cor_auth.services.auth import auth_service
 
 
 async def get_user_by_email(email: str, db: Session) -> User | None:
@@ -167,6 +168,7 @@ async def verify_verification_code(
 async def change_user_password(email: str, password: str, db: Session) -> None:
 
     user = await get_user_by_email(email, db)
+    password = auth_service.get_password_hash(password)
     user.password = password
     try:
         db.commit()
