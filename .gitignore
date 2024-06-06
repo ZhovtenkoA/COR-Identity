@@ -160,3 +160,4 @@ cython_debug/
 private_key.pem
 public_key.pem
 sql_auth.db
+*.env
