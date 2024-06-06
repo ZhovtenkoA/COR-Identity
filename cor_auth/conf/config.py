@@ -25,7 +25,7 @@ class Settings(BaseSettings):
         return public_key
 
     class Config:
-        env_file = ".env"
+        env_file = "env.env"
         env_file_encoding = "utf-8"
 
 
