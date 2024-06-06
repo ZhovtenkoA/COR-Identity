@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Авторизация и регистрация</title>
-        
+        <link rel="stylesheet" type="text/css" href="styles.css">
         <meta name="google-signin-client_id" content="161352424929-s3ris9429m994vcm2m35epe6eu4538el.apps.googleusercontent.com">
         <script src="https://apis.google.com/js/platform.js" async defer></script>
         <meta name="facebook-sdk-version" content="v15.0" />
@@ -10,31 +10,121 @@
     </head>
 <body>
     <h1>Авторизация</h1>
-        <form action="api/auth/login" method="post">
-            <label for="username">Электронная почта:</label>
-            <input type="text" id="username" name="username" required><br>
+    
+        <form id="login-form">
+            <label for="email">Электронная почта:</label>
+            <input type="email" id="email" name="username" required>
             <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password" required><br>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Войти</button>
+        </form>
+        <div id="message"></div>
 
-            
-
-            <input type="submit" value="Войти">
-
-            <link rel="stylesheet" type="text/css" href="static/styles.css">
            
            <p> <div class="g-signin2" data-onsuccess="onSignIn"></div></p>
 
-           <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
-        
+           <p> <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button> </p>
+         
             
+         
+
 
 
         
     <h3>Регистрация</h3>
         <button onclick="window.location.href='/static/signup.html'" class="registration-button">Регистрация</button>
         <div id="gSignInWrapper"> </div>
-        <br> <a href="static/forgot-password.html">Забыли пароль?</a> <br></form>  
+        <br> <p> <a href="/static/forgot-password.html">Забыли пароль?</a></p> <br>   <!--</form>  -->
           
+
+
+
+
+        <script>   document.addEventListener('DOMContentLoaded', function() {
+          const form = document.getElementById('login-form');
+          const messageDiv = document.getElementById('message');
+      
+          form.addEventListener('submit', (event) => {
+              event.preventDefault();
+      
+              const formData = new FormData(form);
+              const params = new URLSearchParams();
+      
+              formData.forEach((value, key) => {
+                  params.append(key, value);
+              });
+      
+              const xhr = new XMLHttpRequest();
+              xhr.open("POST", "/api/auth/login");
+              xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      
+              xhr.onreadystatechange = function() {
+                  if (xhr.readyState === XMLHttpRequest.DONE) {
+                      if (xhr.status === 200) {
+                          const response = JSON.parse(xhr.responseText);
+                          console.log("Успешный вход.");
+                          messageDiv.innerText = "Успешный вход";
+                          messageDiv.style.color = 'green';
+                      } else {
+                          console.error("Произошла ошибка при входе.");
+                          messageDiv.innerText = "Ошибка входа";
+                          messageDiv.style.color = 'red';
+                      }
+                  }
+              };
+      
+              xhr.send(params);
+          });
+      });
+
+
+    </script>
+<!--
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const form = document.getElementById('login-form');
+          const messageDiv = document.getElementById('message');
+      
+          form.addEventListener('submit', (event) => {
+              event.preventDefault();
+      
+              const formData = new FormData(form);
+              const params = new URLSearchParams();
+      
+              formData.forEach((value, key) => {
+                  params.append(key, value);
+              });
+      
+              const xhr = new XMLHttpRequest();
+              xhr.open("POST", "/api/auth/login");
+              xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      
+              xhr.onreadystatechange = function() {
+                  if (xhr.readyState === XMLHttpRequest.DONE) {
+                      if (xhr.status === 200) {
+                          const response = JSON.parse(xhr.responseText);
+                          console.log("Успешный вход.");
+                          messageDiv.innerText = "Успешный вход";
+                          messageDiv.style.color = 'green';
+                      } else {
+                          console.error("Произошла ошибка при входе.");
+                          messageDiv.innerText = "Ошибка входа";
+                          messageDiv.style.color = 'red';
+                      }
+                  }
+              };
+      
+              xhr.send(params);
+          });
+      });
+    </script>   -->
+
+
+
+
+
+
+
         <script>
           window.fbAsyncInit = function() {
             FB.init({

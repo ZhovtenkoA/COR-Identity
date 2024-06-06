@@ -1,51 +1,60 @@
 <!DOCTYPE html>
 <html>
     <head>
+        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Регистрация</title>
         <link rel="stylesheet" type="text/css" href="styles.css">
-
     
     </head>
     <body>
-        <h1>Регистрация</h1>
+
+
+
+        <div class="container">
+            <h1>Регистрация</h1>
             <form id="registrationForm">
                 <label for="email">Электронная почта:</label>
-                <input type="email" id="email" name="email" required><br>
+                <input type="email" id="email" name="email" required>
                 <div id="message" class="message"></div>
-                   <br>
- 
-                    <div class="password-container" style="display: none;" >
-                       <label for="password">Пароль: </label>    
-                       <input type="password" id="password"  placeholder="Введите пароль" name="password"  minlength="4" maxlength="10" required>
-                       <span class="toggle-password" data-target="#password" required>👁️</span>
-                    </div>
-
-                    <br>
-                    
-                <div class="password-container" style="display: none;">      
-                    <label for="confirm-password">Повторите пароль:</label>
-                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль"  minlength="4" maxlength="10">
-                    <span class="toggle-password" data-target="#confirm-password" required>👁️</span>
-                    <br>
-                    <input type="submit" value="Зарегистрироваться">
-                    <br>
-                    <button type="submit" id="login-button" style="display: none;">ВОЙТИ</button>
-                    <br>
+    
+                <div class="password-container hidden">
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" name="password" placeholder="Введите пароль" minlength="4" maxlength="10" required>
+                    <span class="toggle-password" data-target="#password">👁️</span>
                 </div>
-
-
-                   
-                <br>
+    
+                <div class="password-container hidden">
+                    <label for="confirm-password">Повторите пароль:</label>
+                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль" minlength="4" maxlength="10" required>
+                    <span class="toggle-password" data-target="#confirm-password">👁️</span>
+                </div>
+    
+                <input type="submit" id="registration-button"value="Зарегистрироваться"  class="hidden">
+                <button type="submit" id="login-button" class="hidden">ВОЙТИ</button>
+    
                 <input type="button" id="sendVerifCode" value="Отправить код на имейл" onclick="sendVerificationCode()">
-                
-             <br>
-          
-            <div id="verificationCodeWindow" style="display: none;">
-                <input type="text" id="verificationCodeInput">
-                <input type="button" id="ConfirmationCodeInput"  value="Подтвердить" onclick="verifyVerificationCode()">
-            </div>
-        </form>
-        <div id="messageOk" class="messageOk"></div>
+    
+                <div id="verificationCodeWindow" class="hidden">
+                    <input type="text" id="verificationCodeInput"class="hidden" placeholder="Введите код">
+                    <input type="button" id="ConfirmationCodeInput" value="Подтвердить"class="hidden" onclick="verifyVerificationCode()">
+                </div>
+            </form>
+            <div id="messageOk" class="messageOk"></div>
+        </div>
+      
+
+
+
+
+
+
+
+
+
+
+
             <script>
                 const togglePasswordIcons = document.querySelectorAll('.toggle-password');
         
@@ -61,25 +70,118 @@
 
 
 
-            <script>
-                const passwordInput = document.getElementById('password');
-                const confirmPasswordInput = document.getElementById('confirm-password');
-                const form = document.querySelector('form');
-            
-                form.addEventListener('submit', (event) => {
-                  event.preventDefault();
-            
-                  if (passwordInput.value !== confirmPasswordInput.value) {
-                    alert('Пароли не совпадают!');
-                  } else {
-                    alert('Пароли совпадают');
-                  }
-                });
-              </script>
+               <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const passwordInput = document.getElementById('password');
+                    const confirmPasswordInput = document.getElementById('confirm-password');
+                    const form = document.getElementById('registrationForm');
+                    const messageDiv = document.getElementById('messageOk');
+                    const registrationButton = document.getElementById('registration-button');
+                    const loginButton = document.getElementById('login-button');
+        
+                    form.addEventListener('submit', (event) => {
+                        event.preventDefault();
+        
+                        if (passwordInput.value !== confirmPasswordInput.value) {
+                            alert('Пароли не совпадают!');
+                        } else {
+                            const formData = new FormData(form);
+                            const formDataJson = {};
+        
+                            formData.forEach((value, key) => {
+                                formDataJson[key] = value;
+                            });
+        
+                            const xhr = new XMLHttpRequest();
+                            xhr.open("POST", "/api/auth/signup");
+                            xhr.setRequestHeader("Content-Type", "application/json");
+        
+                            xhr.onreadystatechange = function() {
+                                if (xhr.readyState === XMLHttpRequest.DONE) {
+                                    if (xhr.status === 201) {
+                                        const response = JSON.parse(xhr.responseText);
+                                        console.log("Успешный вход.");
+                                        messageDiv.innerText = "Регистрация прошла успешно!";
+                                        messageDiv.style.color = 'green';
+        
+                                        registrationButton.style.display = 'none';
+                                        loginButton.style.display = 'block';
+                                        console.log("Регистрация прошла успешно!");
+                                    } else {
+                                        console.error("Произошла ошибка при регистрации.");
+                                    }
+                                }
+                            };
+        
+                            xhr.send(JSON.stringify(formDataJson));
+                        }
+                    });
+        
+
+                  // Обработчик для кнопки "ВОЙТИ"
                
+                  loginButton.addEventListener('click', () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                const loginDataParams = new URLSearchParams();
+                loginDataParams.append('username', email); // Обратите внимание на 'username'
+                loginDataParams.append('password', password);
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/api/auth/login");
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            console.log("Вход выполнен успешно!");
+                            messageDiv.innerText = "Вход выполнен успешно!";
+                            messageDiv.style.color = 'green';
+
+                                 // Добавление редиректа через 1 секунду после успешного входа
+                            setTimeout(() => {
+                                window.location.href = "https://cor-platform.azurewebsites.net/?access_token=" + response.access_token;
+                            }, 500);
+                           
+
+                        } else {
+                            console.error("Произошла ошибка при входе.");
+                            messageDiv.innerText = "Ошибка входа.";
+                            messageDiv.style.color = 'red';
+                        }
+                    }
+                };
+
+                xhr.send(loginDataParams.toString());
+            });
 
 
 
+
+
+
+
+
+
+
+                    // Функция для переключения видимости пароля
+                    function togglePasswordVisibility(event) {
+                        const targetInput = document.querySelector(event.currentTarget.dataset.target);
+                        if (targetInput.type === 'password') {
+                            targetInput.type = 'text';
+                        } else {
+                            targetInput.type = 'password';
+                        }
+                    }
+        
+                    // Добавление обработчиков событий для иконок показа пароля
+                    document.querySelectorAll('.toggle-password').forEach(function(element) {
+                        element.addEventListener('click', togglePasswordVisibility);
+                    });
+                });
+            </script>
 
 
 
@@ -91,45 +193,7 @@
 
 
         <script>
-            document.getElementById("registrationForm").addEventListener("submit", function(event) {
-                event.preventDefault();
-
-                const messageDiv = document.getElementById('messageOk');
-
-                var form = event.target;
-                var formData = new FormData(form);
-                var formDataJson = {};
-
-                formData.forEach(function(value, key) {
-                formDataJson[key] = value;
-                });
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/api/auth/signup");
-                xhr.setRequestHeader("Content-Type", "application/json");
-
-                xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 201) {
-                        const response = JSON.parse(xhr.responseText);
-                          console.log("Успешный вход.");
-                          messageDiv.innerText = "Регистрация прошла успешно!";
-                          messageDiv.style.color = 'green';
-                         // loginButton.classList.remove('hidden');
-                          document.getElementById('login-button').style.display = 'block';  
-                    // Обработка успешного ответа от сервера
-                    console.log("Регистрация прошла успешно!");
-                    } else {
-                    // Обработка ошибки
-                    
-                    console.error("Произошла ошибка при регистрации.");
-                    }
-                }
-                };
-
-                xhr.send(JSON.stringify(formDataJson));
-            });
-
+         
             function sendVerificationCode() {
                 var form = document.getElementById("registrationForm");
                 var emailInput = form.elements.email;
@@ -148,6 +212,10 @@
                     console.log("Код подтверждения отправлен на вашу электронную почту.");
                     showVerificationCodeInput(); // Показать область для ввода кода
                     document.getElementById('message').style.display = 'none';  
+
+                    document.getElementById('ConfirmationCodeInput').style.display = 'block';
+                    document.getElementById('verificationCodeInput').style.display = 'block';  
+                  
                     } else {
                     // Обработка ошибки
                                // Обработка ошибки
@@ -191,6 +259,7 @@
                                 const containers = document.querySelectorAll('.password-container');
                                 containers.forEach(container => {  container.style.display = 'block';});
                                 document.getElementById('sendVerifCode').style.display = 'none';
+                                document.getElementById('registration-button').style.display = 'block';  
                                 document.getElementById('ConfirmationCodeInput').style.display = 'none';
                                 document.getElementById('verificationCodeInput').style.display = 'none';  
                                 document.getElementById('message').style.display = 'none';  

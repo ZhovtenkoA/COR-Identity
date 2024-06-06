@@ -1,19 +1,64 @@
-body ,html {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    padding: 20px;
-}
 
-.container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+
+body, html {
+    height: 100%;
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    font-family: Arial, sans-serif;
 }
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+
+
+
+#message {
+    color: red;
+}
+#messageOk {
+    color: green;
+}
+button, input[type="submit"], input[type="button"] {
+    padding: 10px;
+    border: none;
+    background-color: #dc56a8;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+}
+button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+    background-color: #dc56a8;
+}
+
+
+
+
 
 h1 {
     color: #333;
@@ -22,11 +67,6 @@ h1 {
 
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 
 label {
     display: block;
@@ -45,7 +85,7 @@ input[type="password"] {
 }
 
 input[type="submit"] {
-    background-color: #4CAF50;
+    background-color: #dc56a8;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -55,7 +95,7 @@ input[type="submit"] {
 
 
 input[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #dc56a8;
 }
 
 .registration-button {
@@ -67,11 +107,11 @@ input[type="submit"]:hover {
 }
 /*                               */
 
-
 .password-container {
-    position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
 }
+
 
 .password-container input {
     padding-right: 30px; /* место для иконки */
@@ -144,6 +184,6 @@ input[type="submit"]:hover {
     margin-top: 20px;
 }
 input[type="button"].registration-button:hover {
-    background-color: #45a049;
+    background-color: #dc56a8;
 }
 
