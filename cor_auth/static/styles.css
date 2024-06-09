@@ -9,31 +9,70 @@ body, html {
     align-items: center;
     font-family: Arial, sans-serif;
 }
+
+
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ccc;
+    width: 250px; /* Установите фиксированную ширину контейнера */
+    margin: 0 auto;
     padding: 20px;
-    border-radius: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
 }
+
+
+
 form {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+
+.input-wrapper {
+    position: relative;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="button"],
+input[type="submit"],
+button {
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
     cursor: pointer;
 }
 
+input[type="button"]:hover,
+input[type="submit"]:hover,
+button:hover {
+    background-color: #0056b3;
+}
 
+ .toggle-password {
+        position: absolute;
+    right: 10px;
+    top: 40%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+    }
 
 
 #message {
@@ -50,10 +89,11 @@ button, input[type="submit"], input[type="button"] {
     cursor: pointer;
     border-radius: 5px;
     width: 100%;
-    max-width: 300px;
+    max-width: 200px;
 }
 button:hover, input[type="submit"]:hover, input[type="button"]:hover {
-    background-color: #dc56a8;
+   /* background-color: #dc56a8;*/
+    background-color: #981666;
 }
 
 
@@ -61,6 +101,14 @@ button:hover, input[type="submit"]:hover, input[type="button"]:hover {
 
 
 h1 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+
+}
+
+
+h3 {
     color: #333;
     margin-bottom: 20px;
     text-align: center;
@@ -85,7 +133,9 @@ input[type="password"] {
 }
 
 input[type="submit"] {
-    background-color: #dc56a8;
+    width: 200px;  /*фиксированная ширина */
+    background-color: #dc56a8; 
+   /* background-color: #981666; */
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -95,47 +145,42 @@ input[type="submit"] {
 
 
 input[type="submit"]:hover {
-    background-color: #dc56a8;
+    background-color: #981666;
 }
 
 .registration-button {
-    background-color: blue;
+    background-color: #dc56a8; 
+  /*  background-color: #981666; */
     color: white;
     padding: 10px 20px;
     margin: 0 auto;
     display: block;
 }
-/*                               */
 
 .password-container {
     display: flex;
-    align-items: center;
+    flex-direction: column;
 }
 
-
-.password-container input {
-    padding-right: 30px; /* место для иконки */
-}
-
-
-
-.password-container .toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-}
 
 
 .hidden {
     display: none;
 }
 
+
 .message {
-    margin-top: 20px;
+    font-size: 14px; /* Уменьшите размер шрифта по необходимости */
+    text-align: center; /* Центрируйте текст */
+    margin-top: 10px; /* Дополнительный отступ сверху для лучшей читаемости */
     font-weight: bold;
 }
+
+.registration-title, .forgot-password-link {
+    text-align: center;
+}
+
+
 
 
 /* Кнопка Google */
@@ -156,6 +201,8 @@ input[type="submit"]:hover {
   .customGPlusSignIn:hover {
     background-color: #e74b37;
   }
+
+
   
   /* Иконка Google */
   .icon {
@@ -186,4 +233,43 @@ input[type="submit"]:hover {
 input[type="button"].registration-button:hover {
     background-color: #dc56a8;
 }
+/*
+.g-signin2,
+.fb-login-button {
+    /* Задайте требуемый размер 
+    width: 150px;
+    height: 30px; /* Выберите подходящую высоту 
+}*/
 
+.custom-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin: 10px auto;
+    width: 220px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #4285f4;
+    font-family: Arial, sans-serif;
+}
+.google-btn {
+    background-color: #4285F4;
+    color: white;
+}
+.google-btn img {
+    margin-right: 10px;
+}
+.facebook-btn {
+    background-color:  #4285F4;
+    color: white;
+}
+.facebook-btn img {
+    margin-right: 10px;
+} 
+
+a:hover {
+    color: blue; /* Измените цвет по вашему вкусу */
+}

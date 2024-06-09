@@ -1,118 +1,262 @@
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Авторизация и регистрация</title>
-        <link rel="stylesheet" type="text/css" href="static/styles.css">
-        <meta name="google-signin-client_id" content="161352424929-s3ris9429m994vcm2m35epe6eu4538el.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
-        <meta name="facebook-sdk-version" content="v15.0" />
-        <script src="https://connect.facebook.net/en_US/sdk.js"></script>
-    </head>
+<head>
+    <link rel="icon" type="image/png" href="static/favicon.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Авторизация и регистрация</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <meta name="google-signin-client_id" content="161352424929-s3ris9429m994vcm2m35epe6eu4538el.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="facebook-sdk-version" content="v15.0" />
+    <script src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+    <style>
+        button,
+        .google-signin-btn,
+        .custom-btn {
+            font-family: inherit; /* Наследовать шрифт от родительского элемента */
+            font-size: 16px; /* Размер шрифта */
+        }
+
+        .custom-btn img {
+            margin-right: 10px;
+        }
+
+        .g-signin2 {
+            display: none; /* Скрыть стандартную кнопку */
+        }
+
+        .google-signin-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4285f4;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .google-signin-btn img {
+            margin-right: 10px;
+        }
+    </style>
+</head>
 <body>
-    <div class="container">
+<div class="container">
     <h1>Авторизация</h1>
-    
-        <form id="login-form">
-            <label for="email">Электронная почта:</label>
-            <input type="email" id="email" name="username" required>
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">Войти</button>
-        </form>
-        <div id="message"></div>
-
-           
-           <p> <div class="g-signin2" data-onsuccess="onSignIn"></div></p>
-
-           <p> <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button> </p>
-         
-            
-         
-
-
-
+    <form id="login-form">
+        <label for="email">Электронная почта:</label>
+        <input type="email" id="email" name="username" required>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Войти</button>
+    </form>
+    <div id="message"></div>
+    <p>
+        <!-- Скрытая стандартная кнопка Google -->
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
         
-                            <h3>Регистрация</h3>
-        <button onclick="window.location.href='/static/signup.html'" class="registration-button">Регистрация</button>
-        <div id="gSignInWrapper"> </div>
-        <br> <p> <a href="/static/forgot-password.html">Забыли пароль?</a></p> <br>   <!--</form>  -->
-          
+        <!-- Кастомная кнопка Google, имитирующая поведение стандартной -->
+        <button class="google-signin-btn" onclick="signInWithGoogle()">
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Icon" width="20" height="20"> Войти через Google
+        </button>
+    </p>
+    <!-- Кастомная кнопка Facebook -->
+    <button class="custom-btn facebook-btn" onclick="signInWithFacebook()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Icon" width="20" height="20"> Войти через Facebook
+    </button>
 
+    <h3>Регистрация</h3>
+    <button onclick="window.location.href='/static/signup.html'" class="registration-button">Регистрация</button>
+    <div id="gSignInWrapper"></div>
+    <br><p><a href="/static/forgot-password.html">Забыли пароль?</a></p><br>
+</div>
 
-    </div>
-
-        <script>  
-        
-        document.addEventListener('DOMContentLoaded', function() {
-          const form = document.getElementById('login-form');
-          const messageDiv = document.getElementById('message');
-      
-          form.addEventListener('submit', (event) => {
-              event.preventDefault();
-      
-              const formData = new FormData(form);
-              const params = new URLSearchParams();
-      
-              formData.forEach((value, key) => {
-                  params.append(key, value);
-              });
-      
-              const xhr = new XMLHttpRequest();
-              xhr.open("POST", "/api/auth/login");
-              xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      
-              xhr.onreadystatechange = function() {
-                  if (xhr.readyState === XMLHttpRequest.DONE) {
-                      if (xhr.status === 200) {
-                          const response = JSON.parse(xhr.responseText);
-                          console.log("Успешный вход.");
-                          messageDiv.innerText = "Успешный вход";
-                          messageDiv.style.color = 'green';
-
-                          setTimeout(() => {
-                   window.location.href = "https://cor-platform.azurewebsites.net/?access_token=" + response.access_token;
-               }, 500);
-
-
-                      } else {
-                          console.error("Произошла ошибка при входе.");
-                          messageDiv.innerText = "Ошибка входа";
-                          messageDiv.style.color = 'red';
-                      }
-                  }
-              };
-             // xhr.send(loginDataParams.toString());
-              xhr.send(params);
-          });
-      });
-
-
-    </script>
+<script>
 
 
 
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('login-form');
+        const messageDiv = document.getElementById('message');
 
-        <script>
-          window.fbAsyncInit = function() {
-            FB.init({
-              appId      : '1580389042741794',
-              xfbml      : true,
-              version    : 'v15.0'
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const params = new URLSearchParams();
+
+            formData.forEach((value, key) => {
+                params.append(key, value);
             });
-          };
-        
-          (function(d, s, id){
-             var js, fjs = d.getElementsByTagName(s)[0];
-             if (d.getElementById(id)) {return;}
-             js = d.createElement(s); js.id = id;
-             js.src = "https://connect.facebook.net/en_US/sdk.js";
-             fjs.parentNode.insertBefore(js, fjs);
-           }(document, 'script', 'facebook-jssdk'));
-        </script>
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/auth/login");
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        console.log("Успешный вход.");
+                        messageDiv.innerText = "Успешный вход";
+                        messageDiv.style.color = 'green';
+
+                        setTimeout(() => {
+                            window.location.href = "https://cor-platform.azurewebsites.net/?access_token=" + response.access_token;
+                        }, 500);
+                    } else {
+                      
+
+                        const errorMessage = getErrorMessage(xhr.status, messageDiv); // Передаем messageDiv в функцию
+                       
+                    console.error("Произошла ошибка при входе.");
+                    messageDiv.innerText = errorMessage;
+                    messageDiv.style.color = 'red';
+                    }
+                }
+            };
+
 
           
-        
-          
+
+            xhr.send(params);
+        });
+    });
+
+
+
+                                                                    function getErrorMessage(status, messageDiv) {
+                                                                      switch(status) {
+                                                                          case 401:
+                                                                              messageDiv.innerText = "Неверный логин или пароль!";
+                                                                              messageDiv.style.color = 'red';
+                                                                              return "Неверный логин или пароль.";
+                                                                           case 400:
+                                                                             messageDiv.innerText = "Пользователь не зарегистрирован!";
+                                                                             messageDiv.style.color = 'red';
+                                                                                return "Пользователь не зарегистрирован!!!";
+                                                                           case 403:
+                                                                                  return "Доступ запрещен.";
+                                                                                        // Добавьте другие кейсы по мере необходимости
+                                                                                default:
+                                                                                console.error("Произошла ошибка при входе.");
+                                                                                  messageDiv.innerText = "Ошибка входа";
+                                                                                  messageDiv.style.color = 'red';
+                                                                                     return "Произошла ошибка при входе.";
+                                                                                          }
+                                                                                            }
+
+
+
+
+
+
+
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail());
+        // Здесь вы можете отправить данные на ваш сервер для аутентификации
+    }
+
+    function signInWithGoogle() {
+        console.log('Google sign-in button clicked');
+        var auth2 = gapi.auth2.getAuthInstance();
+        if (auth2) {
+            auth2.signIn().then(function(googleUser) {
+                onSignIn(googleUser);
+            }, function(error) {
+                console.error('Error signing in with Google: ', error);
+            });
+        } else {
+            console.error('Google API not initialized.');
+        }
+    }
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '1580389042741794',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v15.0'
+        });
+    };
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function signInWithFacebook() {
+        console.log('Facebook sign-in button clicked');
+        FB.login(function(response) {
+            if (response.status === 'connected') {
+                var accessToken = response.authResponse.accessToken;
+                FB.api('/me', {fields: 'name,email,picture'}, function(profile) {
+                    console.log('ID: ' + profile.id);
+                    console.log('Name: ' + profile.name);
+                    console.log('Image URL: ' + profile.picture.data.url);
+                    console.log('Email: ' + profile.email);
+                    // Здесь вы можете отправить данные на ваш сервер для аутентификации
+                });
+            } else {
+                console.log('Not authenticated with Facebook.');
+            }
+        }, {scope: 'public_profile,email'});
+    }
+
+    function loadGoogleAPI() {
+        gapi.load('auth2', function() {
+            gapi.auth2.init().then(function() {
+                console.log('Google API initialized');
+            }, function(error) {
+                console.error('Error initializing Google API: ', error);
+            });
+        });
+    }
+
+    window.onload = loadGoogleAPI;
+</script>
 </body>
 </html>
