@@ -272,4 +272,31 @@ input[type="button"].registration-button:hover {
 
 a:hover {
     color: blue; /* Измените цвет по вашему вкусу */
+} 
+
+.inactive-button {
+    background-color: gray;
+    color: #666; /* Цвет текста */
+    cursor: not-allowed; /* Курсор "недоступен" */
+    
+    pointer-events: none;
 }
+
+.inactive-button:hover {
+    background-color: gray;}
+
+
+.error-message {
+    color: red;
+    font-size: 9px;
+    margin-top: 2px; }
+
+
+
+
+
+
+
+
+
+
