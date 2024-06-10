@@ -103,7 +103,7 @@
             function checkFields() {
                 const isPasswordEmpty = passwordInput.value === '';
                 const isConfirmPasswordEmpty = confirmPasswordInput.value === '';
-                const isPasswordValidLength = (passwordInput.value.length >= 8 && passwordInput.value.length <= 12)&&(confirmPasswordInput.value.length >= 8 && confirmPasswordInput.value.length <= 12);
+                const isPasswordValidLength = (passwordInput.value.length >= 6 && passwordInput.value.length <= 20)&&(confirmPasswordInput.value.length >= 6 && confirmPasswordInput.value.length <= 20);
 
                 if (isPasswordEmpty || isConfirmPasswordEmpty || !isPasswordValidLength) {
                     registrationButton.classList.add('inactive-button');
