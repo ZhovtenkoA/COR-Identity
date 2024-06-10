@@ -94,8 +94,8 @@ def healthchecher(db: Session = Depends(get_db)):
 
 
 app.include_router(auth.router, prefix="/api")
-app.include_router(users.router, prefix="/api")
-app.include_router(record.router, prefix="/api")
+# app.include_router(users.router, prefix="/api")
+# app.include_router(record.router, prefix="/api")
 
 
 if __name__ == "__main__":

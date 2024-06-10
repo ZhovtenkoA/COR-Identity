@@ -4,7 +4,7 @@ from cor_auth.database.models import Role
 
 class UserModel(BaseModel):
     email: str
-    password: str = Field(min_length=4, max_length=10)
+    password: str = Field(min_length=6, max_length=20)
 
 
 class UserDb(BaseModel):

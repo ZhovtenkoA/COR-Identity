@@ -68,7 +68,8 @@ async def signup(
     response_model=TokenModel,
 )
 async def login(
-    body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+    request: Request,
+    body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db),
 ):
     """
     The login function is used to authenticate a user.
@@ -91,8 +92,9 @@ async def login(
     )
     refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     await repository_users.update_token(user, refresh_token, db)
-    redirect_url = f"https://cor-platform.azurewebsites.net/?access_token={access_token}&refresh_token={refresh_token}"
-    return RedirectResponse(redirect_url, status_code=302)                                                                #Редирект на платформу с передачей токена 
+    redirect_url = "https://cor-identity-01s.cor-medical.ua"
+    redirect_responce_url = f"https://cor-platform.azurewebsites.net/?access_token={access_token}&refresh_token={refresh_token}&redirectUrl={redirect_url}"
+    return RedirectResponse(redirect_responce_url, status_code=302)                                                                #Редирект на платформу с передачей токена 
     # return {
     #     "access_token": access_token,
     #     "refresh_token": refresh_token,
@@ -197,7 +199,7 @@ async def confirm_email(
 """
 
 
-@router.post("/forgot password") # Маршрут проверки почты в случае если забыли пароль 
+@router.post("/forgot_password") # Маршрут проверки почты в случае если забыли пароль 
 async def forgot_password_send_verification_code(
     body: EmailSchema,
     background_tasks: BackgroundTasks,
@@ -221,7 +223,7 @@ async def forgot_password_send_verification_code(
     return {"message": "Check your email for verification code."}
 
 
-@router.patch("/change password")
+@router.patch("/change_password")
 async def change_password(body: ChangePasswordModel, db: Session = Depends(get_db)):
     user = await repository_users.get_user_by_email(body.email, db)
     if not user:
