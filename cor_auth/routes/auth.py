@@ -29,6 +29,7 @@ from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
 from cor_auth.services.email import send_email_code, send_email_code_forgot_password
 from cor_auth.conf.config import settings, private_key
+from urllib.parse import urlencode
 
 router = APIRouter(prefix="/auth", tags=["Authorization"])
 security = HTTPBearer()
@@ -92,9 +93,14 @@ async def login(
     )
     refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     await repository_users.update_token(user, refresh_token, db)
-    redirect_url = "https://cor-identity-01s.cor-medical.ua"
-    redirect_responce_url = f"https://cor-platform.azurewebsites.net/?access_token={access_token}&refresh_token={refresh_token}&redirectUrl={redirect_url}"
-    return RedirectResponse(redirect_responce_url, status_code=302)                                                                #Редирект на платформу с передачей токена 
+    redirect_url = "https://cor-platform.azurewebsites.net/"
+    query_params = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "redirectUrl": "https://cor-identity-01s.cor-medical.ua",
+    }
+    redirect_url_with_params = f"{redirect_url}?{urlencode(query_params)}"
+    return RedirectResponse(redirect_url_with_params, status_code=302)       #Редирект на платформу с передачей токена 
     # return {
     #     "access_token": access_token,
     #     "refresh_token": refresh_token,
