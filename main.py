@@ -38,7 +38,7 @@ async def startup():
     print("------------- STARTUP --------------")
 
 
-@app.middleware("http")
+@app.middleware("https")
 async def add_process_time_header(request: Request, call_next):
     """
     The add_process_time_header function adds a header to the response called My-Process-Time.
