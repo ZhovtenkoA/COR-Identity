@@ -138,7 +138,11 @@
                         messageDiv.style.color = 'green';
 
                         setTimeout(() => {
-                            // window.location.href = "https://cor-platform.azurewebsites.net/?access_token=" + response.access_token;
+                        const refreshToken = response.refresh_token;
+                        const redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
+                        const accessToken = response.access_token;
+                        const url = `https://cor-platform.azurewebsites.net/?access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(redirectUrl)}`;
+                        window.location.href = url;
                         }, 500);
                     } else {
                       

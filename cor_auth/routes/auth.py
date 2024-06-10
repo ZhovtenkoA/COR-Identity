@@ -93,19 +93,20 @@ async def login(
     )
     refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     await repository_users.update_token(user, refresh_token, db)
-    redirect_url = "https://cor-platform.azurewebsites.net/"
-    query_params = {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "redirectUrl": "https://cor-identity-01s.cor-medical.ua",
-    }
-    redirect_url_with_params = f"{redirect_url}?{urlencode(query_params)}"
-    return RedirectResponse(redirect_url_with_params, status_code=302)       #Редирект на платформу с передачей токена 
-    # return {
+    redirect_url = "https://cor-identity-01s.cor-medical.ua"
+    # query_params = {
     #     "access_token": access_token,
     #     "refresh_token": refresh_token,
-    #     "token_type": "bearer",
+    #     "redirectUrl": "https://cor-identity-01s.cor-medical.ua",
     # }
+    # redirect_url_with_params = f"{redirect_url}?{urlencode(query_params)}"
+    # return RedirectResponse(redirect_url_with_params, status_code=302)       #Редирект на платформу с передачей токена 
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+        "redirectUrl": redirect_url
+    }
 
 
 @router.get(
