@@ -91,13 +91,13 @@ async def login(
     )
     refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     await repository_users.update_token(user, refresh_token, db)
-    redirect_url = f"https://cor-platform.azurewebsites.net/?access_token={access_token}"
-    # return RedirectResponse(redirect_url)                                                      #Редирект на платформу с передачей токена 
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
-    }
+    redirect_url = f"http://cor-platform.azurewebsites.net/?access_token={access_token}"
+    return RedirectResponse(redirect_url)                                                      #Редирект на платформу с передачей токена 
+    # return {
+    #     "access_token": access_token,
+    #     "refresh_token": refresh_token,
+    #     "token_type": "bearer",
+    # }
 
 
 @router.get(
