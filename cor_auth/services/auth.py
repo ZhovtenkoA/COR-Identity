@@ -57,7 +57,7 @@ class Auth:
         else:
             expire = datetime.now(timezone.utc) + timedelta(minutes=60)
         to_encode.update(
-            {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "access_token"}
+            {"iat": datetime.now(timezone.utc), "exp": expire, "scp": "access_token"}
         )
 
         encoded_access_token = jwt.encode(to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM)
@@ -84,7 +84,7 @@ class Auth:
         else:
             expire = datetime.now(timezone.utc) + timedelta(days=7)
         to_encode.update(
-            {"iat": datetime.now(timezone.utc), "exp": expire, "scope": "refresh_token"}
+            {"iat": datetime.now(timezone.utc), "exp": expire, "scp": "refresh_token"}
         )
 
         encoded_refresh_token = jwt.encode(to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM)
@@ -105,8 +105,8 @@ class Auth:
 
             payload = jwt.decode(refresh_token, key=self.SECRET_KEY, algorithms=self.ALGORITHM)
 
-            if payload["scope"] == "refresh_token":
-                id = payload["id"]
+            if payload["scp"] == "refresh_token":
+                id = payload["oid"]
                 return id
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -139,8 +139,8 @@ class Auth:
 
             payload = jwt.decode(token, key=self.SECRET_KEY, algorithms=self.ALGORITHM)
 
-            if payload["scope"] == "access_token":
-                id = payload["id"]
+            if payload["scp"] == "access_token":
+                id = payload["oid"]
                 if id is None:
                     raise credentials_exception
             else:

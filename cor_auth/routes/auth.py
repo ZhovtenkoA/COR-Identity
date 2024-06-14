@@ -89,7 +89,7 @@ async def login(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный пароль"
         )
     access_token = await auth_service.create_access_token(
-        data={"id": user.id}, expires_delta=3600
+        data={"oid": user.id}, expires_delta=3600
     )
     refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     await repository_users.update_token(user, refresh_token, db)
@@ -135,8 +135,8 @@ async def refresh_token(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
         )
 
-    access_token = await auth_service.create_access_token(data={"id": user.id})
-    refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
+    access_token = await auth_service.create_access_token(data={"oid": user.id})
+    refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
     user.refresh_token = refresh_token
     db.commit()
     await repository_users.update_token(user, refresh_token, db)
