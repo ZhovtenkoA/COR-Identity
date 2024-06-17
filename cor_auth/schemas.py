@@ -31,15 +31,6 @@ class EmailSchema(BaseModel):
     email: EmailStr
 
 
-class RecordModel(BaseModel):
-    record: str = Field(max_length=100)
-
-
-class RecordResponse(RecordModel):
-    id: int
-    record: bytes = Field()
-
-
 class VerificationModel(BaseModel):
     email: EmailStr
     verification_code: int
@@ -48,4 +39,3 @@ class VerificationModel(BaseModel):
 class ChangePasswordModel(BaseModel):
     email: str
     password: str = Field(min_length=4, max_length=20)
-    

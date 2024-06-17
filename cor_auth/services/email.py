@@ -22,7 +22,9 @@ conf = ConnectionConfig(
 )
 
 
-async def send_email_code(email: EmailStr, host: str, verification_code): #registration
+async def send_email_code(
+    email: EmailStr, host: str, verification_code
+):  # registration
     """
     The send_email function sends an email to the user with a link to confirm their email address.
         Args:
@@ -51,7 +53,10 @@ async def send_email_code(email: EmailStr, host: str, verification_code): #regis
     except ConnectionErrors as err:
         print(err)
 
-async def send_email_code_forgot_password(email: EmailStr, host: str, verification_code): #forgot password
+
+async def send_email_code_forgot_password(
+    email: EmailStr, host: str, verification_code
+):  # forgot password
     """
     The send_email function sends an email to the user with a link to confirm their email address.
         Args:
@@ -75,7 +80,9 @@ async def send_email_code_forgot_password(email: EmailStr, host: str, verificati
         )
 
         fm = FastMail(conf)
-        await fm.send_message(message, template_name="forgot_password_email_template.html")
+        await fm.send_message(
+            message, template_name="forgot_password_email_template.html"
+        )
         print("Sending forgot password email done")
     except ConnectionErrors as err:
         print(err)

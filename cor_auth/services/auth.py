@@ -9,12 +9,12 @@ from sqlalchemy.orm import Session
 
 from cor_auth.database.db import get_db
 from cor_auth.repository import users as repository_users
-from cor_auth.conf.config import settings, private_key
+from cor_auth.conf.config import settings
 
 
 class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    SECRET_KEY = private_key
+    SECRET_KEY = settings.secret_key
     ALGORITHM = settings.algorithm
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -60,7 +60,9 @@ class Auth:
             {"iat": datetime.now(timezone.utc), "exp": expire, "scp": "access_token"}
         )
 
-        encoded_access_token = jwt.encode(to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM)
+        encoded_access_token = jwt.encode(
+            to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM
+        )
         print(encoded_access_token)
         return encoded_access_token
 
@@ -87,7 +89,9 @@ class Auth:
             {"iat": datetime.now(timezone.utc), "exp": expire, "scp": "refresh_token"}
         )
 
-        encoded_refresh_token = jwt.encode(to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM)
+        encoded_refresh_token = jwt.encode(
+            to_encode, key=self.SECRET_KEY, algorithm=self.ALGORITHM
+        )
         return encoded_refresh_token
 
     async def decode_refresh_token(self, refresh_token: str):
@@ -103,7 +107,9 @@ class Auth:
         """
         try:
 
-            payload = jwt.decode(refresh_token, key=self.SECRET_KEY, algorithms=self.ALGORITHM)
+            payload = jwt.decode(
+                refresh_token, key=self.SECRET_KEY, algorithms=self.ALGORITHM
+            )
 
             if payload["scp"] == "refresh_token":
                 id = payload["oid"]

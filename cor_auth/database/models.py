@@ -33,11 +33,4 @@ class Verification(Base):
     email_confirmation = Column(Boolean, default=False)
 
 
-class Record(Base):
-    __tablename__ = "records"
-
-    id = Column(Integer, primary_key=True)
-    record = Column(String(100), nullable=False)
-
-
 Base.metadata.create_all(bind=engine)

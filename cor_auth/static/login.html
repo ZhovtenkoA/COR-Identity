@@ -1,15 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
