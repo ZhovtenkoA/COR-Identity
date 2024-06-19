@@ -17,6 +17,9 @@ from fastapi import (
     Request,
 )
 
+redirect_url = ""
+
+
 async def get_user_by_email(email: str, db: Session) -> User | None:
     """
     The get_user_by_email function takes in an email and a database session,
@@ -199,3 +202,5 @@ async def extract_dynamic_redirect_url(request: Request) -> str:
     if redirect_url is None:
         redirect_url = "https://cor-platform.azurewebsites.net"
     return redirect_url
+
+

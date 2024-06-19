@@ -3,7 +3,7 @@ import time
 import uvicorn
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from fastapi import FastAPI, Request, Depends, HTTPException, status
+from fastapi import FastAPI, Request, Depends, HTTPException, status, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -11,11 +11,13 @@ from fastapi.staticfiles import StaticFiles
 from cor_auth.routes import auth
 from cor_auth.database.db import get_db
 from cor_auth.routes import auth, users
+from cor_auth.repository import  users as repo_users
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="cor_auth/static"), name="static")
 
 origins = ["http://localhost:3000", "http://192.168.153.21:3000"]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -55,14 +57,15 @@ async def add_process_time_header(request: Request, call_next):
 
 
 @app.get("/", name="Корень")
-def read_root():
+def read_root(request: Request):
     """
     The read_root function is a view function that returns the root of the API.
     It's purpose is to provide a simple way for users to test if their connection
     to the API is working properly.
 
-    :return: A dictionary
     """
+    repo_users.redirect_url
+    repo_users.redirect_url = request.query_params.get('redirectUrl')
     return FileResponse("cor_auth/static/login.html")
 
 
