@@ -23,6 +23,7 @@ from cor_auth.schemas import (
     EmailSchema,
     VerificationModel,
     ChangePasswordModel,
+    LoginResponseModel
 )
 from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
@@ -65,7 +66,7 @@ async def signup(
 
 @router.post(
     "/login",
-    response_model=TokenModel,
+    response_model=LoginResponseModel,
 )
 async def login(
     request: Request,
@@ -94,13 +95,16 @@ async def login(
     )
     refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
     await repository_users.update_token(user, refresh_token, db)
-    redirect_url = "https://cor-identity-01s.cor-medical.ua"
+    # redirect_url = "https://cor-identity-01s.cor-medical.ua"
+    # redirect_url = "https://cor-platform.azurewebsites.net"
+    redirect_url = await repository_users.extract_dynamic_redirect_url(request)
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
         "redirectUrl": redirect_url,
     }
+
 
 
 @router.get(

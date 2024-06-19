@@ -7,6 +7,16 @@ from sqlalchemy import func
 from cor_auth.services.auth import auth_service
 
 
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends,
+    status,
+    Security,
+    BackgroundTasks,
+    Request,
+)
+
 async def get_user_by_email(email: str, db: Session) -> User | None:
     """
     The get_user_by_email function takes in an email and a database session,
@@ -176,3 +186,16 @@ async def change_user_password(email: str, password: str, db: Session) -> None:
     except Exception as e:
         db.rollback()
         raise e
+
+async def extract_dynamic_redirect_url(request: Request) -> str:
+    """
+    Extracts the dynamic redirect URL from the request.
+
+    :param request: Request: The incoming request
+    :return: str: The dynamic redirect URL
+    """
+    print(request.url)
+    redirect_url = request.query_params.get('redirectUrl')
+    if redirect_url is None:
+        redirect_url = "https://cor-platform.azurewebsites.net"
+    return redirect_url

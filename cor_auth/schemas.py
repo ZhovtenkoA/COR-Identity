@@ -27,6 +27,13 @@ class TokenModel(BaseModel):
     token_type: str = "bearer"
 
 
+class LoginResponseModel(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    redirectUrl: str = "https://cor-identity-01s.cor-medical.ua"
+
+
 class EmailSchema(BaseModel):
     email: EmailStr
 

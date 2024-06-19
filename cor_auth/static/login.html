@@ -126,11 +126,118 @@
                         messageDiv.style.color = 'green';
 
                         setTimeout(() => {
+
+
                         const refreshToken = response.refresh_token;
-                        const redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
+                        const redirectUrl = response.redirectUrl
+                        const urlParams = new URLSearchParams();
                         const accessToken = response.access_token;
-                        const url = `https://cor-platform.azurewebsites.net/?access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(redirectUrl)}`;
+
+                        urlParams.set('access_token', accessToken);
+                        urlParams.set('refresh_token', refreshToken);
+                        urlParams.set('redirectUrl', redirectUrl);
+
+                        const queryString = urlParams.toString();
+                        const url = `${redirectUrl}/?${queryString}`;
+
                         window.location.href = url;
+
+
+
+
+
+
+                        // const refreshToken = response.refresh_token;
+                        // const urlParams = new URLSearchParams();
+                        
+
+
+                        // const refreshToken = response.refresh_token;
+                        // const redirectUrl = `${window.location.origin}${window.location.pathname}`;
+                        // const urlParams = new URLSearchParams();
+                        // const accessToken = response.access_token;
+
+                        // urlParams.set('access_token', accessToken);
+                        // urlParams.set('refresh_token', refreshToken);
+                        // urlParams.set('redirectUrl', redirectUrl);
+
+                        // const queryString = urlParams.toString();
+                        // const url = `${redirectUrl}?${queryString}`;
+
+                        // window.location.href = url;          
+
+
+
+
+                        // const refreshToken = response.refresh_token;
+                        // const startredirectUrl = 'https://cor-platform.azurewebsites.net'; // URL-адрес, на який ви хочете перенаправитися
+                        // // const urlParams = new URLSearchParams();
+                        // // const accessToken = response.access_token;
+
+                        // // urlParams.set('access_token', accessToken);
+                        // // urlParams.set('refresh_token', refreshToken);
+                        // // urlParams.set('redirectUrl', redirectUrl);
+
+                        // // const queryString = urlParams.toString();
+                        // const surl = `${startredirectUrl}/?`;
+
+                        // window.location.href = surl;
+
+                        // const refreshToken = response.refresh_token;
+                        // const redirectUrl = `${window.location.origin}${window.location.pathname}`;
+                        // const urlParams = new URLSearchParams();
+                        // const accessToken = response.access_token;
+
+                        // urlParams.set('access_token', accessToken);
+                        // urlParams.set('refresh_token', refreshToken);
+                        // urlParams.set('redirectUrl', redirectUrl);
+
+                        // const queryString = urlParams.toString();
+                        // const url = `${redirectUrl}?${queryString}`;
+
+                        // window.location.href = url; 
+
+
+
+                        // const startRedirectUrl = 'https://cor-platform.azurewebsites.net'; // стартовый урл
+                        // const urlParams = new URLSearchParams(window.location.search);
+                        // const redirectUrl = urlParams.get('redirectUrl');
+                        // const redirectUrl = 'https://cor-platform.azurewebsites.net';
+                        // const accessToken = response.access_token;
+                        // const url = ${redirectUrl}/?access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(redirectUrl)};
+
+
+                        // const urlParams = new URLSearchParams();
+                        // urlParams.set('redirectUrl', redirectUrl);
+                        // const queryString = urlParams.toString();
+                        // const redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
+                        // const urlParams = new URLSearchParams(window.location.search);
+                        // const redirectUrl = urlParams.get('redirectUrl');
+                        // const redirectUrl = 'https://cor-platform.azurewebsites.net';
+                        // const accessToken = response.access_token;
+                        // const url = `${queryString}/access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(queryString)}`;
+                        // const url = `https://cor-platform.azurewebsites.net/?access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(redirectUrl)}`;
+                        // window.location.href = url;
+
+
+
+                        // const urlParams = new URLSearchParams(window.location.search);
+                        // const redirectUrl = urlParams.get('redirectUrl');
+                        // const redirectUrl = 'https://cor-platform.azurewebsites.net';
+                        // const accessToken = response.access_token;
+                        // const url = ${redirectUrl}/?access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(redirectUrl)};
+
+
+
+                        // const refreshToken = response.refresh_token;
+                        // const redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
+
+                        // const urlParams = new URLSearchParams(window.location.search);
+                        // const redirectUrl = urlParams.get('redirectUrl');
+
+                        // const accessToken = response.access_token;
+                        // const url = `https://cor-platform.azurewebsites.net/?access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(redirectUrl)}`;
+                        // window.location.href = url;
                         }, 500);
                     } else {
                       
