@@ -138,7 +138,7 @@
                         urlParams.set('redirectUrl', redirectUrl);
 
                         const queryString = urlParams.toString();
-                        const url = `${redirectUrl}/?${queryString}`;
+                        const url = `${redirectUrl}/?access_token=${accessToken}&refresh_token=${refreshToken}`;
 
                         window.location.href = url;
 
