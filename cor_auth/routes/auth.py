@@ -94,7 +94,7 @@ async def login(
     access_token = await auth_service.create_access_token(
         data={"oid": user.id}, expires_delta=3600
     )
-    refresh_token = await auth_service.create_refresh_token(data={"id": user.id})
+    refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
     await repository_users.update_token(user, refresh_token, db)
     redirect_url = repository_users.redirect_url
     if redirect_url == None:
