@@ -1,17 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,6 +64,20 @@
     </div>
 
     <script>
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let redirectUrl = urlParams.get('redirectUrl');
+    if (redirectUrl == null) {
+    // По умолчанию
+    redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
+        } 
+    else {
+        redirectUrl = redirectUrl.trim();
+        }
+    if (redirectUrl !== null) {
+    redirectUrl = decodeURIComponent(redirectUrl);
+    }
+
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.toggle-password').forEach(function(element) {
                 element.addEventListener('click', function() {
@@ -193,12 +193,18 @@
                             messageDiv.style.color = 'green';
 
                             setTimeout(() => {
-                        const refreshToken = response.refresh_token;
-                        const redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
-                        const accessToken = response.access_token;
-                        const url = `https://cor-platform.azurewebsites.net/?access_token=${accessToken}&refresh_token=${refreshToken}&redirectUrl=${encodeURIComponent(redirectUrl)}`;
-                        window.location.href = url;
-                        }, 500);
+                     
+                            const refreshToken = response.refresh_token;
+                            const accessToken = response.access_token;
+
+                            urlParams.set('access_token', accessToken);
+                            urlParams.set('refresh_token', refreshToken);
+
+                            const queryString = urlParams.toString();
+                            const url = `${redirectUrl}/?access_token=${accessToken}&refresh_token=${refreshToken}`;
+
+                            window.location.href = url;
+                                }, 500);
                         } else {
                             console.error("Произошла ошибка при входе.");
                             messageDiv.innerText = "Ошибка входа.";
