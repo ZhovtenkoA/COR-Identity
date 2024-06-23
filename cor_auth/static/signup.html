@@ -37,7 +37,7 @@
                 <label for="password">Пароль:</label>
                 <div class="input-wrapper">
                     <div id="password-message" class="error-message"></div>
-                    <input type="password" id="password" name="password" placeholder="Введите пароль" minlength="8" maxlength="12" required>
+                    <input type="password" id="password" name="password" placeholder="Введите пароль" minlength="5" maxlength="21" required>
                     <span class="toggle-password" data-target="#password">👁️</span>
                     
                 </div>
@@ -46,15 +46,16 @@
             <div class="password-container hidden">
                 <label for="confirm-password">Повторите пароль:</label>
                 <div class="input-wrapper">
-                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль" minlength="8" maxlength="12" required>
+                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль" minlength="5" maxlength="21" required>
                     <span class="toggle-password" data-target="#confirm-password">👁️</span>
                 </div>
             </div>
 
             <button type="button" id="registration-button" class="hidden">Зарегистрироваться</button>
             <button type="button" id="login-button" class="hidden">ВОЙТИ</button>
-            <input type="button" id="sendVerifCode" value="Отправить код на имейл" onclick="sendVerificationCode()">
-
+           <!-- <input type="button" id="sendVerifCode" value="Отправить код на имейл" onclick="sendVerificationCode()">-->
+            <button type="button" id="sendVerifCode" onclick="sendVerificationCode()">Отправить код на имейл</button>
+            <div id="confirmationMessage" class="confirmationMessage"></div>
             <div id="verificationCodeWindow" class="hidden">
                 <input type="text" id="verificationCodeInput" class="hidden" placeholder="Введите код">
                 <input type="button" id="ConfirmationCodeInput" value="Подтвердить" class="hidden" onclick="verifyVerificationCode()">
@@ -92,6 +93,7 @@
                 });
             });
 
+            const confirmationMessageDiv = document.getElementById('confirmationMessage');
             const passwordInput = document.getElementById('password');
             const confirmPasswordInput = document.getElementById('confirm-password');
             const form = document.getElementById('registrationForm');
@@ -100,47 +102,70 @@
             const loginButton = document.getElementById('login-button');
             const passwordMessageDiv = document.getElementById('password-message');
 
-            function checkFields() {
-                const isPasswordEmpty = passwordInput.value === '';
-                const isConfirmPasswordEmpty = confirmPasswordInput.value === '';
-                const isPasswordValidLength = (passwordInput.value.length >= 6 && passwordInput.value.length <= 20)&&(confirmPasswordInput.value.length >= 6 && confirmPasswordInput.value.length <= 20);
 
-                if (isPasswordEmpty || isConfirmPasswordEmpty || !isPasswordValidLength) {
-                    registrationButton.classList.add('inactive-button');
-                    registrationButton.disabled = true;
-                    loginButton.classList.add('inactive-button');
-                    loginButton.disabled = true;
+function checkFields() {
+        const isPasswordEmpty = passwordInput.value === '';
+        const isConfirmPasswordEmpty = confirmPasswordInput.value === '';
+        const isPasswordValidLength = passwordInput.value.length >= 6 && passwordInput.value.length <= 20;
 
-                    if (!isPasswordValidLength) {
-                           passwordMessageDiv.innerText = 'Пароль должен содержать от 6 до 20 символов';
-                           passwordMessageDiv.style.color = 'red';
-                           } else {
-                           passwordMessageDiv.innerText = '';
-                        }
-                         
+        if (isPasswordEmpty || isConfirmPasswordEmpty || !isPasswordValidLength) {
+            registrationButton.classList.add('inactive-button');
+            registrationButton.disabled = true;
+            loginButton.classList.add('inactive-button');
+            loginButton.disabled = true;
 
-
-                } else {
-                    registrationButton.classList.remove('inactive-button');
-                    registrationButton.disabled = false;
-                    loginButton.classList.remove('inactive-button');
-                    loginButton.disabled = false;
-                    passwordMessageDiv.innerText = '';
-                }
+            if (!isPasswordValidLength) {
+                passwordMessageDiv.innerText = 'Пароль должен содержать от 6 до 20 символов';
+                passwordMessageDiv.style.color = 'red';
+            } else {
+                passwordMessageDiv.innerText = '';
             }
 
+            messageDiv.innerText = ''; // Очищаем сообщение о совпадении паролей
+        } else {
+            registrationButton.classList.remove('inactive-button');
+            registrationButton.disabled = false;
+            loginButton.classList.remove('inactive-button');
+            loginButton.disabled = false;
+            passwordMessageDiv.innerText = '';
+
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                messageDiv.innerText = 'Пароли не совпадают!!!';
+                messageDiv.style.color = 'red';
+            } else {
+                messageDiv.innerText = 'Пароли совпадают!';
+                messageDiv.style.color = 'green';
+            }
+        }
+    }
             // Проверка полей при загрузке страницы
             checkFields();
 
+
+
+              // Проверка полей при вводе данных
+          passwordInput.addEventListener('input', function() {
+        checkFields();
+        if (passwordInput.value.length > 0 || confirmPasswordInput.value.length > 0) {
+            confirmationMessageDiv.innerText = ''; // Скрыть сообщение о подтверждении почты
+               }
+            });
+
+        confirmPasswordInput.addEventListener('input', function() {
+        checkFields();
+        if (passwordInput.value.length > 0 || confirmPasswordInput.value.length > 0) {
+            confirmationMessageDiv.innerText = ''; // Скрыть сообщение о подтверждении почты
+                }
+             });
             // Проверка полей при вводе данных
             passwordInput.addEventListener('input', checkFields);
             confirmPasswordInput.addEventListener('input', checkFields);
 
             registrationButton.addEventListener('click', () => {
                 if (passwordInput.value !== confirmPasswordInput.value) {
-                    alert('Пароли не совпадают!');
+                  //  alert('Пароли не совпадают!');
                 } else {
-                    alert('Пароли совпадают');
+                 //   alert('Пароли совпадают');
                     const formData = new FormData(form);
                     const formDataJson = {};
 
@@ -221,7 +246,9 @@
             var form = document.getElementById("registrationForm");
             var emailInput = form.elements.email;
             var messageDiv = document.getElementById("message");
+            var confirmationMessageDiv = document.getElementById("confirmationMessage");
             var email = emailInput.value;
+            var sendCodeButton = document.getElementById('sendVerifCode');
 
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/api/auth/send_verification_code");
@@ -230,13 +257,39 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        alert('Код подтверждения отправлен на Вашу почту!');
+                      //  alert('Код подтверждения отправлен на Вашу почту!');
                         console.log("Код подтверждения отправлен на вашу электронную почту.");
+                        confirmationMessageDiv.innerText = "Код подтверждения выслан Вам на имейл!";
+                        confirmationMessageDiv.style.color = 'green';
+
                         showVerificationCodeInput();
                         messageDiv.style.display = 'none';
 
                         document.getElementById('ConfirmationCodeInput').style.display = 'block';
                         document.getElementById('verificationCodeInput').style.display = 'block';
+
+                             // Блокируем кнопку и устанавливаем обратный отсчет
+                //var sendCodeButton = document.getElementById('sendVerifCode');
+
+
+                sendCodeButton.disabled = true;
+                        sendCodeButton.classList.add('inactive-button');
+                        
+                        var countdown = 30;
+                        sendCodeButton.textContent = `Отправить ещё через ${countdown}с`;
+
+                        var interval = setInterval(function() {
+                            countdown--;
+                            sendCodeButton.textContent = `Отправить ещё через ${countdown}с`;
+                            if (countdown <= 0) {
+                                clearInterval(interval);
+                                sendCodeButton.disabled = false;
+                                sendCodeButton.classList.remove('inactive-button');
+                                sendCodeButton.textContent = 'Отправить код на имейл';
+                                //confirmationMessageDiv.style.display = 'none';
+                            }
+                        }, 1000);
+
                     } else {
                         var error = JSON.parse(xhr.responseText);
                         console.error("Произошла ошибка при отправке кода подтверждения на почту.");
@@ -257,7 +310,7 @@
         function verifyVerificationCode() {
             var verificationCodeInput = document.getElementById("verificationCodeInput");
             var emailInput = document.getElementById("email");
-
+            var confirmationMessageDiv = document.getElementById("confirmationMessage");
             var email = emailInput.value;
             var verificationCode = verificationCodeInput.value;
 
@@ -268,9 +321,12 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
+                        confirmationMessageDiv.innerText = "Ваша почта успешно подтверждена!";
+                confirmationMessageDiv.style.color = 'green';
+                confirmationMessageDiv.style.display = 'block'; // confirmationMessageDiv.style.display = 'none';
+                      
                         console.log("Код подтверждения верный.");
-                        alert('Ваша почта успешно подтверждена!!!');
-
+                      
                         const containers = document.querySelectorAll('.password-container');
                         containers.forEach(container => { container.style.display = 'block'; });
                         document.getElementById('sendVerifCode').style.display = 'none';
@@ -280,8 +336,11 @@
                         document.getElementById('message').style.display = 'none';
                     } else {
                         console.error("Неверный код подтверждения.");
-                        alert('Неверный код подтверждения!!!');
+                       // alert('Неверный код подтверждения!!!');
 
+                        confirmationMessageDiv.innerText = "НЕВЕРНЫЙ КОД ПОДТВЕРЖДЕНИЯ!!!";
+                        confirmationMessageDiv.style.color = 'red';
+                        confirmationMessageDiv.style.display = 'block';
                         const containers = document.querySelectorAll('.password-container');
                         containers.forEach(container => { container.style.display = 'none'; });
                     }

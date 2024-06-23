@@ -276,7 +276,7 @@ a:hover {
 
 .inactive-button {
     background-color: gray;
-    color: #666; /* Цвет текста */
+    color: #3a3838; /* Цвет текста */
     cursor: not-allowed; /* Курсор "недоступен" */
     
     pointer-events: none;
@@ -293,7 +293,11 @@ a:hover {
 
 
 
-
+.confirmationMessage {
+    color: green;
+    font-size: 14px;
+    margin-top: 10px;}
+ 
 
 
 
