@@ -102,8 +102,7 @@
             const loginButton = document.getElementById('login-button');
             const passwordMessageDiv = document.getElementById('password-message');
 
-
-function checkFields() {
+            function checkFields() {
         const isPasswordEmpty = passwordInput.value === '';
         const isConfirmPasswordEmpty = confirmPasswordInput.value === '';
         const isPasswordValidLength = passwordInput.value.length >= 6 && passwordInput.value.length <= 20;
@@ -343,6 +342,11 @@ function checkFields() {
                         confirmationMessageDiv.style.display = 'block';
                         const containers = document.querySelectorAll('.password-container');
                         containers.forEach(container => { container.style.display = 'none'; });
+                        setTimeout(function() {
+                            verificationCodeInput.value = "";
+                            confirmationMessageDiv.innerText = " ";
+                            //confirmationMessageDiv.style.display = 'none';
+                                                            }, 3000);
                     }
                 }
             };
