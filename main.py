@@ -7,18 +7,24 @@ from fastapi import FastAPI, Request, Depends, HTTPException, status, Request, Q
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+import hashlib
+import hmac
 
 from cor_auth.routes import auth
 from cor_auth.database.db import get_db
 from cor_auth.routes import auth, users
 from cor_auth.repository import  users as repo_users
+from cor_auth.conf.config import settings
+from cor_auth.services.logger import logger
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="cor_auth/static"), name="static")
 
 origins = ["http://localhost:3000", "http://192.168.153.21:3000"]
 
-
+# Middleware для CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -28,27 +34,84 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-async def startup():
-    """
-    The startup function is called when the application starts up.
-    It's a good place to initialize things that are needed by your app, like database connections or caches.
 
-    :return: A list of coroutines
-    """
-    print("------------- STARTUP --------------")
+# Обработчики исключений
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+@app.exception_handler(Exception)
+async def exception_handler(request: Request, exc: Exception):
+    logger.error("An unhandled exception occurred", exc_info=exc)
+    return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"detail": "Internal Server Error"})
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.error("Request validation error", exc_info=exc)
+    return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content={"detail": "Validation Error"})
 
 
+
+
+
+# Маршруты
+@app.get("/config")
+def read_config():
+    return {"ENV": settings.app_env}
+
+@app.get("/", name="Корень")
+def read_root(request: Request):
+    return FileResponse("cor_auth/static/login.html")
+
+@app.get("/api/healthchecker")
+def healthchecker(db: Session = Depends(get_db)):
+    try:
+        result = db.execute(text("SELECT 1")).fetchone()
+        if result is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Database is not configured correctly")
+        return {"message": "Welcome to FastApi, database work correctly"}
+    except Exception as e:
+        logger.error("Database connection error", exc_info=e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error connecting to the database")
+
+
+
+
+# Middleware для проверки подписи
+@app.middleware("http")
+async def verify_request_signature(request: Request, call_next):
+    if settings.signing_key_verification:
+        try:
+            signature = request.headers.get("X-Signature")
+            if signature is None:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing signature")
+
+            body = await request.body()
+            body_str = body.decode()
+
+            if not verify_signature(body_str, signature):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid signature")
+
+            return await call_next(request)
+        except HTTPException as exc:
+            return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    else:
+        return await call_next(request)
+
+
+def verify_signature(body: str, signature: str) -> bool:
+    computed_signature = hmac.new(settings.signing_key, body.encode(), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(computed_signature.encode('utf-8'), signature.encode('utf-8'))
+
+
+# def create_signature(signing_key: str, body: str) -> str:
+#     signature = hmac.new(settings.signing_key.encode(), body.encode(), hashlib.sha256).hexdigest()
+#     return signature
+
+
+# Middleware для добавления заголовка времени обработки
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    """
-    The add_process_time_header function adds a header to the response called My-Process-Time.
-    The value of this header is the time it took for the request to be processed by all middleware and routes.
-
-    :param request: Request: Access the request object
-    :param call_next: Call the next function in the pipeline
-    :return: A response object
-    """
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time
@@ -56,43 +119,16 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-@app.get("/", name="Корень")
-def read_root(request: Request):
-    """
-    The read_root function is a view function that returns the root of the API.
-    It's purpose is to provide a simple way for users to test if their connection
-    to the API is working properly.
-
-    """
-    repo_users.redirect_url
-    repo_users.redirect_url = request.query_params.get('redirectUrl')
-    return FileResponse("cor_auth/static/login.html")
+# Событие при старте приложения
+@app.on_event("startup")
+async def startup():
+    print("------------- STARTUP --------------")
 
 
-@app.get("/api/healthchecker")
-def healthchecher(db: Session = Depends(get_db)):
-    """
-    The healthchecher function is used to check the health of the application.
-    It returns a message if everything is ok, or an error otherwise.
+if settings.app_env == "production":
+    print(settings.app_env)
+    app.middleware("http")(verify_request_signature)
 
-    :param db: Session: Pass the database connection to the function
-    :return: A dict with a message
-    """
-    try:
-        result = db.execute(text("SELECT 1")).fetchone()
-        print(result)
-        if result is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Database is not configured correctly",
-            )
-        return {"message": "Welcome to FastApi, database work correctly"}
-    except Exception as e:
-        print(e)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error connecting to the database",
-        )
 
 
 app.include_router(auth.router, prefix="/api")

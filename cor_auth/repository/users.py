@@ -5,19 +5,8 @@ from cor_auth.database.models import User, Role, Verification
 from cor_auth.schemas import UserModel
 from sqlalchemy import func
 from cor_auth.services.auth import auth_service
+from cor_auth.services.logger import logger
 
-
-from fastapi import (
-    APIRouter,
-    HTTPException,
-    Depends,
-    status,
-    Security,
-    BackgroundTasks,
-    Request,
-)
-
-redirect_url = ""
 
 
 async def get_user_by_email(email: str, db: Session) -> User | None:
@@ -139,7 +128,7 @@ async def write_verification_code(
         verification_record.verification_code = verification_code
         try:
             db.commit()
-            print("Updated verification code in the existing record")
+            logger.debug("Updated verification code in the existing record")
         except Exception as e:
             db.rollback()
             raise e
@@ -151,7 +140,7 @@ async def write_verification_code(
             db.add(verification_record)
             db.commit()
             db.refresh(verification_record)
-            print("Created new verification record")
+            logger.debug("Created new verification record")
         except Exception as e:
             db.rollback()
             raise e
@@ -185,22 +174,11 @@ async def change_user_password(email: str, password: str, db: Session) -> None:
     user.password = password
     try:
         db.commit()
-        print("Password has changed")
+        logger.debug("Password has changed")
     except Exception as e:
         db.rollback()
         raise e
 
-async def extract_dynamic_redirect_url(request: Request) -> str:
-    """
-    Extracts the dynamic redirect URL from the request.
 
-    :param request: Request: The incoming request
-    :return: str: The dynamic redirect URL
-    """
-    print(request.url)
-    redirect_url = request.query_params.get('redirectUrl')
-    if redirect_url is None:
-        redirect_url = "https://cor-platform.azurewebsites.net"
-    return redirect_url
 
 

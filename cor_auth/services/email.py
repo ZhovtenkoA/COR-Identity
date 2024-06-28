@@ -5,6 +5,7 @@ from fastapi_mail.errors import ConnectionErrors
 from pydantic import EmailStr
 
 from cor_auth.conf.config import settings
+from cor_auth.services.logger import logger
 
 
 conf = ConnectionConfig(
@@ -35,7 +36,7 @@ async def send_email_code(
     :param host: str: Pass the hostname of the server to the template
     :return: A coroutine object
     """
-    print("Sending email...")
+    logger.debug(f"Sending email to {email}")
     try:
         message = MessageSchema(
             subject="Confirm your email ",
@@ -49,7 +50,7 @@ async def send_email_code(
 
         fm = FastMail(conf)
         await fm.send_message(message, template_name="email_templates.html")
-        print("Sending email done")
+        logger.debug(f"Sending email to {email} done!")
     except ConnectionErrors as err:
         print(err)
 
@@ -67,7 +68,7 @@ async def send_email_code_forgot_password(
     :param host: str: Pass the hostname of the server to the template
     :return: A coroutine object
     """
-    print("Sending forgot password email...")
+    logger.debug(f"Sending email to {email}")
     try:
         message = MessageSchema(
             subject="Forgot Password",
@@ -83,6 +84,6 @@ async def send_email_code_forgot_password(
         await fm.send_message(
             message, template_name="forgot_password_email_template.html"
         )
-        print("Sending forgot password email done")
+        logger.debug(f"Sending email to {email} done!")
     except ConnectionErrors as err:
         print(err)

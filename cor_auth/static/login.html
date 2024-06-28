@@ -96,8 +96,6 @@
 
 <script>
 
-
-
     const urlParams = new URLSearchParams(window.location.search);
     let redirectUrl = urlParams.get('redirectUrl');
 
@@ -112,6 +110,36 @@
     redirectUrl = decodeURIComponent(redirectUrl);
     }
     localStorage.setItem('redirectUrl', redirectUrl);
+
+        // fetch('api/auth/allowed-redirect-urls')
+        // .then((response) => response.json())
+        // .then((data) => {
+        //     const allowedRedirectUrls = data.allowed_redirect_urls;
+
+        //     const urlParams = new URLSearchParams(window.location.search);
+        //     let redirectUrl = urlParams.get('redirectUrl');
+
+        //     if (
+        //     redirectUrl == null ||
+        //     !allowedRedirectUrls.includes(redirectUrl.trim())
+        //     ) {
+
+        //     //redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
+        //     console.error('Недопустимый редирект URL-адрес');
+        //     } else {
+        //     redirectUrl = redirectUrl.trim();
+        //     redirectUrl = decodeURIComponent(redirectUrl)
+        //     }
+
+        //     localStorage.setItem('redirectUrl', redirectUrl);
+        // })
+        // .catch((error) => {
+        //     console.error('Ошибка при получении разрешенных URL-адресов:', error);
+        // });
+
+
+
+
 
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('login-form');
@@ -143,14 +171,10 @@
 
 
                         const refreshToken = response.refresh_token;
-                        // const redirectUrl = response.redirectUrl
-                        // const urlParams = new URLSearchParams();
-                        // const redirectUrl = urlParams.get('redirectUrl');
                         const accessToken = response.access_token;
 
                         urlParams.set('access_token', accessToken);
                         urlParams.set('refresh_token', refreshToken);
-                        // urlParams.set('redirectUrl', redirectUrl);
 
                         const queryString = urlParams.toString();
                         const url = `${redirectUrl}/?access_token=${accessToken}&refresh_token=${refreshToken}`;

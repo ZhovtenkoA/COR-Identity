@@ -33,4 +33,4 @@ class Verification(Base):
     email_confirmation = Column(Boolean, default=False)
 
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)

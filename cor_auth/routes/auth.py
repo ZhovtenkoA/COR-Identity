@@ -30,12 +30,25 @@ from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
 from cor_auth.services.email import send_email_code, send_email_code_forgot_password
 from cor_auth.conf.config import settings
-
+from cor_auth.services.logger import logger
 
 router = APIRouter(prefix="/auth", tags=["Authorization"])
 security = HTTPBearer()
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
+
+
+
+
+@router.get("/allowed-redirect-urls")
+def get_allowed_redirect_urls():
+    allowed_redirect_urls = [
+        settings.ALLOWED_REDIRECT_URL_1,
+        settings.ALLOWED_REDIRECT_URL_2,
+        settings.ALLOWED_REDIRECT_URL_3, 
+    ]
+    return {"allowed_redirect_urls": allowed_redirect_urls}
+
 
 
 @router.post(
@@ -56,12 +69,13 @@ async def signup(
     """
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
+        logger.debug(f"{body.email} user already exist")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Account already exists"
         )
     body.password = auth_service.get_password_hash(body.password)
     new_user = await repository_users.create_user(body, db)
-    print(f"{body.email} user successfully created")
+    logger.debug(f"{body.email} user successfully created")
     return {"user": new_user, "detail": "User successfully created"}
 
 
@@ -85,29 +99,26 @@ async def login(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Пользователь не найден / неверный имейл",  # Возврат сообщения что пользователь не найден/неправильный имейл
+            detail="User not found / invalid email",
         )
     if not auth_service.verify_password(body.password, user.password):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный пароль"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
         )
     access_token = await auth_service.create_access_token(
         data={"oid": user.id}, expires_delta=3600
     )
     refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
     await repository_users.update_token(user, refresh_token, db)
-    redirect_url = repository_users.redirect_url
-    if redirect_url == None:
-        redirect_url = "https://cor-identity-01s.cor-medical.ua"
-    # redirect_url = "https://cor-identity-01s.cor-medical.ua"
-    # redirect_url = "https://cor-platform.azurewebsites.net"
-    # redirect_url = await repository_users.extract_dynamic_redirect_url(request)
-    # redirect_url = db.get("redirect_url")
+    # redirect_url = repository_users.redirect_url
+    # if redirect_url == None:
+    #     redirect_url = "https://cor-identity-01s.cor-medical.ua"
+    logger.debug(f'{user.email}  login success')
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
-        "redirectUrl": redirect_url,
+        # "redirectUrl": redirect_url,
     }
 
 
@@ -143,6 +154,7 @@ async def refresh_token(
     user.refresh_token = refresh_token
     db.commit()
     await repository_users.update_token(user, refresh_token, db)
+    logger.debug(f"{user.email}'s refresh token updated")
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -164,7 +176,7 @@ async def send_verification_code(
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
 
-        print("Account already exists")
+        logger.debug(f"{body.email}Account already exists")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Пользователь  '{body.email}' уже существует",
@@ -174,7 +186,7 @@ async def send_verification_code(
         background_tasks.add_task(
             send_email_code, body.email, request.base_url, verification_code
         )
-        print("Check your email for verification code.")
+        logger.debug("Check your email for verification code.")
         await repository_users.write_verification_code(
             email=body.email, db=db, verification_code=verification_code
         )
@@ -192,13 +204,13 @@ async def confirm_email(body: VerificationModel, db: Session = Depends(get_db)):
     confirmation = False
     if ver_code:
         confirmation = True
-        print("Your email is confirmed")
+        logger.debug(f"Your {body.email} is confirmed")
         return {
             "message": "Your email is confirmed",  # Сообщение для JS о том что имейл подтвержден
             "confirmation": confirmation,
         }
     else:
-        print("Invalid verification code")
+        logger.debug(f"{body.email} - Invalid verification code")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid verification code"
         )
@@ -228,6 +240,7 @@ async def forgot_password_send_verification_code(
         await repository_users.write_verification_code(
             email=body.email, db=db, verification_code=verification_code
         )
+        logger.debug(f"{body.email} - Check your email for verification code.")
     return {"message": "Check your email for verification code."}
 
 
@@ -241,6 +254,7 @@ async def change_password(body: ChangePasswordModel, db: Session = Depends(get_d
     else:
         if body.password:
             await repository_users.change_user_password(body.email, body.password, db)
+            logger.debug(f"{body.email} - changed his password")
             return {"message": f"User '{body.email}' changed his password"}
         else:
             print("Incorrect password input")
