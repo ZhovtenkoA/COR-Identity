@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     allowed_redirect_url_1: str ="ALLOWED_REDIRECT_URL"
     allowed_redirect_url_2: str ="ALLOWED_REDIRECT_URL"
     allowed_redirect_url_3: str ="ALLOWED_REDIRECT_URL"
+    reload: bool = "False"
 
     class Config:
 
