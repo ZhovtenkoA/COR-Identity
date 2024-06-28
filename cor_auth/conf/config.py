@@ -23,9 +23,9 @@ class Settings(BaseSettings):
     debug: bool = "FALSE"
     signing_key: bytes = "SIGNING_KEY"
     signing_key_verification: bool = "TRUE"
-    ALLOWED_REDIRECT_URL_1: str ="ALLOWED_REDIRECT_URL"
-    ALLOWED_REDIRECT_URL_2: str ="ALLOWED_REDIRECT_URL"
-    ALLOWED_REDIRECT_URL_3: str ="ALLOWED_REDIRECT_URL"
+    allowed_redirect_url_1: str ="ALLOWED_REDIRECT_URL"
+    allowed_redirect_url_2: str ="ALLOWED_REDIRECT_URL"
+    allowed_redirect_url_3: str ="ALLOWED_REDIRECT_URL"
 
     class Config:
 

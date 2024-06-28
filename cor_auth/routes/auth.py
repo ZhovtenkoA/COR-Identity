@@ -43,9 +43,9 @@ ALGORITHM = settings.algorithm
 @router.get("/allowed-redirect-urls")
 def get_allowed_redirect_urls():
     allowed_redirect_urls = [
-        settings.ALLOWED_REDIRECT_URL_1,
-        settings.ALLOWED_REDIRECT_URL_2,
-        settings.ALLOWED_REDIRECT_URL_3, 
+        settings.allowed_redirect_url_1,
+        settings.allowed_redirect_url_2,
+        settings.allowed_redirect_url_3, 
     ]
     return {"allowed_redirect_urls": allowed_redirect_urls}
 
