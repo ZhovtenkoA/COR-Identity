@@ -8,7 +8,6 @@ from cor_auth.services.auth import auth_service
 from cor_auth.services.logger import logger
 
 
-
 async def get_user_by_email(email: str, db: Session) -> User | None:
     """
     The get_user_by_email function takes in an email and a database session,
@@ -178,7 +177,3 @@ async def change_user_password(email: str, password: str, db: Session) -> None:
     except Exception as e:
         db.rollback()
         raise e
-
-
-
-

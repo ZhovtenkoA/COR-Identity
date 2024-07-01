@@ -6,7 +6,7 @@ from fastapi import (
     Security,
     BackgroundTasks,
     Request,
-    Query
+    Query,
 )
 from fastapi.security import (
     OAuth2PasswordRequestForm,
@@ -24,7 +24,7 @@ from cor_auth.schemas import (
     EmailSchema,
     VerificationModel,
     ChangePasswordModel,
-    LoginResponseModel
+    LoginResponseModel,
 )
 from cor_auth.repository import users as repository_users
 from cor_auth.services.auth import auth_service
@@ -38,17 +38,14 @@ SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 
 
-
-
 @router.get("/allowed-redirect-urls")
 def get_allowed_redirect_urls():
     allowed_redirect_urls = [
         settings.allowed_redirect_url_1,
         settings.allowed_redirect_url_2,
-        settings.allowed_redirect_url_3, 
+        settings.allowed_redirect_url_3,
     ]
     return {"allowed_redirect_urls": allowed_redirect_urls}
-
 
 
 @router.post(
@@ -113,14 +110,13 @@ async def login(
     # redirect_url = repository_users.redirect_url
     # if redirect_url == None:
     #     redirect_url = "https://cor-identity-01s.cor-medical.ua"
-    logger.debug(f'{user.email}  login success')
+    logger.debug(f"{user.email}  login success")
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
         # "redirectUrl": redirect_url,
     }
-
 
 
 @router.get(

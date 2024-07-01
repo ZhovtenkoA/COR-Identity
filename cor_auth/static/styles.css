@@ -298,9 +298,46 @@ a:hover {
     font-size: 14px;
     margin-top: 10px;}
  
+ .language-switcher {
+            position: relative;
+            margin-left: -109px; /* Отступ справа от панели */
+        }
 
+        #lang-select {
+            display: none; /* Скрытие оригинального select элемента */
+        }
 
+.select2-container--default .select2-selection--single {
+            border: none;
+            height: 36px;
+            padding-left: 1px; /* Отступ слева для иконок */
+            background-repeat: no-repeat;
+            background-position: center left;
+            background-size: 14px; /* Размер иконок */
+            font-size: 10px; /* Уменьшение размера шрифта */
+            border-radius: 4px;
+        }
 
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px; /* Выравнивание текста по вертикали */
+        }
 
+.select2-container--default .select2-selection--single .flag-img {
+            width: 19px; /* Ширина изображения флага */
+            height: auto; /* Автоматическая высота */
+            vertical-align: middle; /* Выравнивание по вертикали */
+            margin-right: 5px; /* Отступ справа от текста */
+            
+        }
 
+        /* Стили для уменьшения размера флагов и текста в выпадающем списке */
+.select2-dropdown .select2-results__option {
+            font-size: 10px; /* Уменьшение размера шрифта */
+        }
 
+.select2-dropdown .select2-results__option .flag-img {
+            width: 19px; /* Уменьшение ширины изображения флага */
+            height: auto; /* Автоматическая высота */
+            vertical-align: middle; /* Выравнивание по вертикали */
+            margin-right: 5px; /* Отступ справа от текста */
+        }

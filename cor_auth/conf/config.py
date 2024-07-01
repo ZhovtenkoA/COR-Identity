@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 import glob
 
+
 class Settings(BaseSettings):
     sqlalchemy_database_url: str = (
         "postgresql+psycopg2://user:password@localhost:5432/postgres"
@@ -23,17 +24,16 @@ class Settings(BaseSettings):
     debug: bool = "FALSE"
     signing_key: bytes = "SIGNING_KEY"
     signing_key_verification: bool = "TRUE"
-    allowed_redirect_url_1: str ="ALLOWED_REDIRECT_URL"
-    allowed_redirect_url_2: str ="ALLOWED_REDIRECT_URL"
-    allowed_redirect_url_3: str ="ALLOWED_REDIRECT_URL"
+    allowed_redirect_url_1: str = "ALLOWED_REDIRECT_URL"
+    allowed_redirect_url_2: str = "ALLOWED_REDIRECT_URL"
+    allowed_redirect_url_3: str = "ALLOWED_REDIRECT_URL"
     reload: bool = "False"
 
     class Config:
 
-        env_files = glob.glob('./*.env')
-        env_file = env_files[0] if env_files else '.env'
+        env_files = glob.glob("./*.env")
+        env_file = env_files[0] if env_files else ".env"
         env_file_encoding: str = "utf-8"
-
 
 
 settings = Settings()

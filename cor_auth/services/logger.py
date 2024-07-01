@@ -7,19 +7,23 @@ DEBUG = settings.debug
 
 logger = logging.getLogger(__name__)
 if DEBUG:
-        logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.DEBUG)
 else:
-        logger.setLevel(logging.INFO)
+    logger.setLevel(logging.INFO)
+
 
 def handle_exception(exc_type, exc_value, exc_traceback):
     # Логирование информации об исключении
-    logger.error("An unhandled exception occurred", exc_info=(exc_type, exc_value, exc_traceback))
+    logger.error(
+        "An unhandled exception occurred", exc_info=(exc_type, exc_value, exc_traceback)
+    )
+
 
 # Регистрация обработчика исключений
 sys.excepthook = handle_exception
 
 
-file_handler = TimedRotatingFileHandler('logs.log', when='M', backupCount=7)
+file_handler = TimedRotatingFileHandler("logs.log", when="M", backupCount=7)
 file_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s]: %(message)s"))
 logger.addHandler(file_handler)
 
