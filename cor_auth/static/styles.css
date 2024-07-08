@@ -22,7 +22,18 @@ body, html {
     text-align: center;
 }
 
+#back-link {
+  /*  position: absolute; */
+  text-align: left;
+    top: 10px;
+    left: -50px;
+    text-decoration: none;
+    color: #007bff; /* цвет ссылки */
+}
 
+#back-link:hover {
+    text-decoration: underline;
+}
 
 form {
     display: flex;
@@ -301,6 +312,7 @@ a:hover {
  .language-switcher {
             position: relative;
             margin-left: -109px; /* Отступ справа от панели */
+            /*width: 54px; */
         }
 
         #lang-select {
@@ -323,7 +335,7 @@ a:hover {
         }
 
 .select2-container--default .select2-selection--single .flag-img {
-            width: 19px; /* Ширина изображения флага */
+            width: 14px; /* Ширина изображения флага */
             height: auto; /* Автоматическая высота */
             vertical-align: middle; /* Выравнивание по вертикали */
             margin-right: 5px; /* Отступ справа от текста */
@@ -336,7 +348,7 @@ a:hover {
         }
 
 .select2-dropdown .select2-results__option .flag-img {
-            width: 19px; /* Уменьшение ширины изображения флага */
+            width: 14px; /* Уменьшение ширины изображения флага */
             height: auto; /* Автоматическая высота */
             vertical-align: middle; /* Выравнивание по вертикали */
             margin-right: 5px; /* Отступ справа от текста */

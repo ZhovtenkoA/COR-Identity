@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="icon" type="image/png" href="static/favicon.png">
+        <link rel="icon" type="image/png" href="favicon.png">
         <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
         <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
@@ -15,7 +15,7 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/manifest.json">
+      <!--  <link rel="manifest" href="/manifest.json"> -->
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
         <meta name="theme-color" content="#ffffff">
@@ -71,7 +71,7 @@
                 <option value="ru" data-icon="flag_ru.svg">Русский</option>
                 <option value="zh" data-icon="flag_cn.svg">中文</option>
                 <option value="en" data-icon="flag_en.svg">English</option>
-                <option value="uk" data-icon="static/flags/flag_uk.svg">Українська</option>
+                <option value="uk" data-icon="flag_uk.svg">Українська</option>
             </select>
         </div>
     </div>
@@ -100,29 +100,13 @@
     <br><button onclick="window.location.href='/static/forgot-password.html' + '?redirectUrl=' + redirectUrl;" class="registration-button"><span data-translate="forgot-password-button">Forgot password?</span></a><br>
 </div>
 
-<!--<script src="translation.js"></script> -->
-<script>
-    // Установка языка при загрузке страницы
-    document.addEventListener('DOMContentLoaded', function() {
-        const userLang = navigator.language || navigator.userLanguage;
-        const defaultLang = userLang.startsWith('ru') ? 'ru' : userLang.startsWith('en') ? 'en' : userLang.startsWith('zh') ? 'zh' : 'uk';
-        setLanguage(defaultLang);
-    });
 
-    // Функция для переключения языка
-    function setLanguage(language) {
-        document.querySelectorAll("[data-translate]").forEach(function(element) {
-            const key = element.getAttribute("data-translate");
-            element.innerText = translations[language][key];
-        });
-    }
-</script>
+
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     let redirectUrl = urlParams.get('redirectUrl');
 
     if (redirectUrl == null) {
-    // По умолчанию
         redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
     } else {
         redirectUrl = redirectUrl.trim();
@@ -131,38 +115,6 @@
         redirectUrl = decodeURIComponent(redirectUrl);
     }
     localStorage.setItem('redirectUrl', redirectUrl);
-
-
-
-        // fetch('api/auth/allowed-redirect-urls')
-        // .then((response) => response.json())
-        // .then((data) => {
-        //     const allowedRedirectUrls = data.allowed_redirect_urls;
-
-        //     const urlParams = new URLSearchParams(window.location.search);
-        //     let redirectUrl = urlParams.get('redirectUrl');
-
-        //     if (
-        //     redirectUrl == null ||
-        //     !allowedRedirectUrls.includes(redirectUrl.trim())
-        //     ) {
-
-        //     //redirectUrl = 'https://cor-identity-01s.cor-medical.ua';
-        //     console.error('Недопустимый редирект URL-адрес');
-        //     } else {
-        //     redirectUrl = redirectUrl.trim();
-        //     redirectUrl = decodeURIComponent(redirectUrl)
-        //     }
-
-        //     localStorage.setItem('redirectUrl', redirectUrl);
-        // })
-        // .catch((error) => {
-        //     console.error('Ошибка при получении разрешенных URL-адресов:', error);
-        // });
-
-
-
-
 
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('login-form');
@@ -312,10 +264,34 @@
 
 <script>
     // Установка языка при загрузке страницы
+    /*
     document.addEventListener('DOMContentLoaded', function() {
         const userLang = navigator.language || navigator.userLanguage;
-        const defaultLang = userLang.startsWith('ru') ? 'ru' : userLang.startsWith('en') ? 'en' : userLang.startsWith('zh') ? 'zh' : 'uk';
+        const defaultLang = userLang.startsWith('ru') ? 'ru' : userLang.startsWith('en') ? 'en' : userLang.startsWith('zh') ? 'zh' : 'ru';
         setLanguage(defaultLang);
+*/
+
+document.addEventListener('DOMContentLoaded', function() {
+    const storedLang = localStorage.getItem('selectedLanguage');
+    const browserLang = navigator.language || navigator.userLanguage;
+    let defaultLang;
+
+    if (storedLang) {
+        defaultLang = storedLang;
+    } else if (browserLang) {
+        defaultLang = browserLang.startsWith('ru') ? 'ru' :
+                      browserLang.startsWith('en') ? 'en' :
+                      browserLang.startsWith('zh') ? 'zh' : 
+                      browserLang.startsWith('uk') ? 'uk':'ru';
+    } else {
+        defaultLang = 'ru';
+    }
+
+    setLanguage(defaultLang);
+
+     // Установка значения селектора языка на загруженный язык
+     const langSelect = document.getElementById('lang-select');
+    langSelect.value = defaultLang;
 
         // Инициализация Select2 для выпадающего списка языка
         $('#lang-select').select2({
@@ -324,13 +300,16 @@
             minimumResultsForSearch: Infinity
         });
     });
+  
+
+
 
     // Функция для отображения изображений в Select2
     function formatState(state) {
         if (!state.id) {
             return state.text;
         }
-        var baseUrl = '/static';
+        var baseUrl = 'static/flags';
         var $state = $(
             '<span><img src="' + baseUrl + '/' + state.element.getAttribute('data-icon') + '" class="flag-img" /> ' + state.text + '</span>'
         );
@@ -342,6 +321,7 @@
         setLanguage(language);
         const langSelect = document.getElementById('lang-select');
         langSelect.value = language;
+        localStorage.setItem('selectedLanguage', language); // Сохраняем выбранный язык в localStorage
     }
 
     // Функция для установки языка
@@ -349,6 +329,7 @@
         document.querySelectorAll("[data-translate]").forEach(function(element) {
             const key = element.getAttribute("data-translate");
             element.innerText = translations[language][key];
+           
         });
     }
 </script>
