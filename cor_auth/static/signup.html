@@ -25,11 +25,11 @@
             <meta name="theme-color" content="#ffffff">
             <link rel="stylesheet" type="text/css" href="styles.css">
             <title data-translate="signup-title">Регистрация</title>
+           
         </head>
         <body>
             <div class="container">
-           
-                <a href="/" id="back-link" data-translate="back-link-text"><<<назад<<<</a>
+                <button class="link-button" onclick="goBack()" data-translate="back-link-text"><<<назад<<<</button>
                 <h1 data-translate="signup-title">Регистрация</h1>
                 <form id="registrationForm">
                     <label for="email" data-translate="email-label">Электронная почта:</label>
@@ -68,6 +68,7 @@
             </div>
           
             <script src="translation.js"></script>   
+            <script> function goBack() { window.history.back();  } </script>
             <script>
               
     const urlParams = new URLSearchParams(window.location.search);
@@ -367,7 +368,8 @@ function startCountdown(button, language) {
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        confirmationMessageDiv.innerText = "Ваша почта успешно подтверждена!";
+                        //confirmationMessageDiv.innerText = "Ваша почта успешно подтверждена!";
+                        confirmationMessageDiv.innerText = translations[userLang]["confirmationMessage"]; 
                 confirmationMessageDiv.style.color = 'green';
                 confirmationMessageDiv.style.display = 'block'; // confirmationMessageDiv.style.display = 'none';
                       
@@ -384,7 +386,8 @@ function startCountdown(button, language) {
                         console.error("Неверный код подтверждения.");
                        // alert('Неверный код подтверждения!!!');
 
-                        confirmationMessageDiv.innerText = "НЕВЕРНЫЙ КОД ПОДТВЕРЖДЕНИЯ!!!";
+                      //  confirmationMessageDiv.innerText = "НЕВЕРНЫЙ КОД ПОДТВЕРЖДЕНИЯ!!!";
+                        confirmationMessageDiv.innerText =  translations[userLang]["invalid-code"];
                         confirmationMessageDiv.style.color = 'red';
                         confirmationMessageDiv.style.display = 'block';
                         const containers = document.querySelectorAll('.password-container');
