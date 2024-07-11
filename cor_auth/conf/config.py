@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     allowed_redirect_url_2: str = "ALLOWED_REDIRECT_URL"
     allowed_redirect_url_3: str = "ALLOWED_REDIRECT_URL"
     reload: bool = "False"
+    google_login: bool = "False"
+    facebook_login: bool = "False"
 
     class Config:
 

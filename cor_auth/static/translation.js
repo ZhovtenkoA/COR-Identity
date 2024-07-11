@@ -53,7 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const userLang = localStorage.getItem('selectedLanguage') || navigator.language || navigator.userLanguage;
     const defaultLang = userLang.startsWith('ru') ? 'ru' : 
                         userLang.startsWith('en') ? 'en' : 
-                        userLang.startsWith('zh') ? 'zh' : 'uk';
+                        userLang.startsWith('zh') ? 'zh' :
+                        userLang.startsWith('uk') ? 'uk' :'ru';
     setLanguage(defaultLang);
 });
 
@@ -90,7 +91,9 @@ const translations = {
         "error-message": "Произошла ошибка при отправке кода подтверждения на почту.",
         "back-link-text": "<<<назад<<<",
         "password-placeholder": "Введите пароль",
-        "confirm-password-placeholder": "Подтвердите пароль"
+        "confirm-password-placeholder": "Подтвердите пароль",
+        "confirmationMessage": "Ваша почта успешно подтверждена!",
+        "heading" : "Сброс пароля"
     },
     en: {
         title: "Authorization",
@@ -121,7 +124,9 @@ const translations = {
         "error-message": "An error occurred while sending the verification code to your email.",
         "back-link-text": "<<<back<<<",
         "password-placeholder": "Enter password",
-        "confirm-password-placeholder": "Confirm password"
+        "confirm-password-placeholder": "Confirm password",
+        "confirmationMessage" : "Your email has been successfully confirmed!",
+        "heading" : "Password Reset"
     },
     zh: {
         title: "授权",
@@ -152,7 +157,9 @@ const translations = {
         "error-message": "发送验证码到您的邮箱时出错。",
         "back-link-text": "<<<返回<<<",
         "password-placeholder": "输入密码",
-        "confirm-password-placeholder": "确认密码"
+        "confirm-password-placeholder": "确认密码",
+        "confirmationMessage" : "您的邮件已成功确认！",
+        "heading" : "重设密码"
     },
     uk: {
         title: "Авторизація",
@@ -183,5 +190,7 @@ const translations = {
         "error-message": "Сталася помилка під час відправлення коду підтвердження на електронну пошту.",
         "back-link-text": "<<<назад<<<",
         "password-placeholder": "Введіть пароль",
-        "confirm-password-placeholder": "Підтвердіть пароль"
+        "confirm-password-placeholder": "Підтвердіть пароль",
+        "confirmationMessage" : "Вашу пошту успішно підтверджено!",
+        "heading" : "Скидання пароля"
     },}

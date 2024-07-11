@@ -63,10 +63,18 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 def read_config():
     return {"ENV": settings.app_env}
 
+@app.get("/get_social_login_settings", name="social login settings")
+def get_login_settings():
+    return JSONResponse(
+        content={"google_login": f"{settings.google_login}",
+                 "facebook_login" : f"{settings.facebook_login}"
+                 })
+
 
 @app.get("/", name="Корень")
 def read_root(request: Request):
-    return FileResponse("cor_auth/static/login.html")
+    return FileResponse(path="cor_auth/static/login.html")
+    
 
 
 @app.get("/api/healthchecker")
