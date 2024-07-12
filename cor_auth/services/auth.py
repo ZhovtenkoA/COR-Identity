@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from datetime import timedelta, datetime, timezone
 from sqlalchemy.orm import Session
+from urllib.parse import urlparse
 
 from cor_auth.database.db import get_db
 from cor_auth.repository import users as repository_users
@@ -160,6 +161,17 @@ class Auth:
         if user is None:
             raise credentials_exception
         return user
+    
+
+    # Функция для проверки допустимости редирект URL
+    def is_valid_redirect_url(self, redirectUrl):
+        allowed_urls = settings.allowed_redirect_urls
+        parsed_url = urlparse(redirectUrl)
+        if parsed_url.scheme not in ["http", "https"]:
+            return False
+        if f"{parsed_url.scheme}://{parsed_url.netloc}" not in allowed_urls:
+            return False
+        return True
 
 
 auth_service = Auth()

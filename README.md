@@ -1,4 +1,4 @@
-COR-Auth API
+COR-IDENTITY API
 
 
 Установка:

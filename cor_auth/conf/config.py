@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings
 import glob
+import json
+import os
 
 
 class Settings(BaseSettings):
@@ -24,12 +26,11 @@ class Settings(BaseSettings):
     debug: bool = "FALSE"
     signing_key: bytes = "SIGNING_KEY"
     signing_key_verification: bool = "TRUE"
-    allowed_redirect_url_1: str = "ALLOWED_REDIRECT_URL"
-    allowed_redirect_url_2: str = "ALLOWED_REDIRECT_URL"
-    allowed_redirect_url_3: str = "ALLOWED_REDIRECT_URL"
+    allowed_redirect_urls: list = json.loads(os.getenv("ALLOWED_REDIRECT_URLS", "[]"))
     reload: bool = "False"
-    google_login: bool = "False"
-    facebook_login: bool = "False"
+    authorization_via_email: bool = "True"
+    authorization_via_google: bool = "True"
+    authorization_via_facebook: bool = "True"
 
     class Config:
 

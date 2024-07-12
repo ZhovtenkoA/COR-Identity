@@ -37,17 +37,6 @@ security = HTTPBearer()
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 
-
-@router.get("/allowed-redirect-urls")
-def get_allowed_redirect_urls():
-    allowed_redirect_urls = [
-        settings.allowed_redirect_url_1,
-        settings.allowed_redirect_url_2,
-        settings.allowed_redirect_url_3,
-    ]
-    return {"allowed_redirect_urls": allowed_redirect_urls}
-
-
 @router.post(
     "/signup", response_model=ResponseUser, status_code=status.HTTP_201_CREATED
 )

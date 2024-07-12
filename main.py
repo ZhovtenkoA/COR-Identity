@@ -16,8 +16,10 @@ from cor_auth.routes import auth, users
 from cor_auth.repository import users as repo_users
 from cor_auth.conf.config import settings
 from cor_auth.services.logger import logger
+from cor_auth.services.auth import auth_service
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="cor_auth/static"), name="static")
@@ -59,22 +61,32 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 # Маршруты
+
+
+
+# Маршрут для обработки корневого запроса
+@app.get("/", name="Корень")
+def read_root(request: Request, 
+              redirectUrl: str = ""
+              ):
+    if not auth_service.is_valid_redirect_url(redirectUrl):
+        raise HTTPException(status_code=400, detail="Invalid redirect URL")
+    
+    return FileResponse(path="cor_auth/static/login.html")
+
+
 @app.get("/config")
 def read_config():
     return {"ENV": settings.app_env}
 
+
 @app.get("/get_social_login_settings", name="social login settings")
 def get_login_settings():
     return JSONResponse(
-        content={"google_login": f"{settings.google_login}",
-                 "facebook_login" : f"{settings.facebook_login}"
+        content={"google_login": f"{settings.authorization_via_google}",
+                 "facebook_login" : f"{settings.authorization_via_facebook}",
+                 "email_login" : f"{settings.authorization_via_email}"
                  })
-
-
-@app.get("/", name="Корень")
-def read_root(request: Request):
-    return FileResponse(path="cor_auth/static/login.html")
-    
 
 
 @app.get("/api/healthchecker")
@@ -93,6 +105,7 @@ def healthchecker(db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Error connecting to the database",
         )
+
 
 
 # Middleware для проверки подписи
@@ -135,6 +148,7 @@ def verify_signature(body: str, signature: str) -> bool:
 # def create_signature(signing_key: str, body: str) -> str:
 #     signature = hmac.new(settings.signing_key.encode(), body.encode(), hashlib.sha256).hexdigest()
 #     return signature
+
 
 
 # Middleware для добавления заголовка времени обработки
