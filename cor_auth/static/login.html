@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const response = JSON.parse(xhr.responseText);
                         console.log("Successful login.");
                         const userLang = localStorage.getItem('selectedLanguage');
-                        messageDiv.innerText = translations[userLang]["message-ok"];
+                        // messageDiv.innerText = translations[userLang]["message-ok"];
                         messageDiv.style.color = 'green';
 
                         setTimeout(() => {
