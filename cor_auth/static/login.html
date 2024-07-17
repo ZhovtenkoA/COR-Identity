@@ -203,6 +203,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         const response = JSON.parse(xhr.responseText);
                         console.log("Successful login.");
                         const userLang = localStorage.getItem('selectedLanguage');
+                        // console.log("__________translation___________");
+                        // console.log(translations); // Проверить объект translations в консоли
+                        // console.log("_____________userLang____________");
+                        // console.log(userLang); // Проверить значение userLang в консоли
+                        // console.log("_____________translations[userLang]____________");
+                        // console.log(translations[userLang]); // Проверить значение translations[userLang] в консоли
+                        // console.log("_____________messageDiv.innerText____________");
+                        // console.log(translations[userLang]["message-ok"]);
+                        // console.log(errorMessage); // Проверить значение errorMessage в консоли
+                        messageDiv.innerText = "Successful login"
                         // messageDiv.innerText = translations[userLang]["message-ok"];
                         messageDiv.style.color = 'green';
 
@@ -221,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     } else {
                         const errorMessage = getErrorMessage(xhr.status, messageDiv);
-                        console.error("Error during login.");
+                        // console.error("Error during login.");
                         messageDiv.innerText = errorMessage;
                         messageDiv.style.color = 'red';
                     }
@@ -233,21 +243,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function getErrorMessage(status, messageDiv) {
-        switch(status) {
+        const userLang = localStorage.getItem('selectedLanguage');
+        switch(status) {      
             case 401:
-                const userLang = localStorage.getItem('selectedLanguage');
-                messageDiv.innerText = translations[userLang]["message-error"];
+                // messageDiv.innerText = translations[userLang]["message-error"];
                 messageDiv.style.color = 'red';
                 return "Invalid username or password.";
-            case 400:
+            case 404:
                 messageDiv.innerText = "User not registered!";
                 messageDiv.style.color = 'red';
                 return "User not registered!";
             case 403:
                 return "Access denied.";
             default:
-                console.error("Error during login.");
-                messageDiv.innerText = translations[userLang]["message-error"];
+                // console.error("Error during login.");
+                // console.log(translations); // Проверить объект translations в консоли
+                // console.log(userLang); // Проверить значение userLang в консоли
+                // console.log(translations[userLang]); // Проверить значение translations[userLang] в консоли
+                // console.log(errorMessage); // Проверить значение errorMessage в консоли
+                // messageDiv.innerText = translations[userLang]["message-error"];
                 messageDiv.style.color = 'red';
                 return "Error during login.";
         }

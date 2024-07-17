@@ -136,7 +136,8 @@ if (isPasswordEmpty || isConfirmPasswordEmpty || !isPasswordValidLength) {
 
 
        // passwordMessageDiv.innerText = 'Пароль должен содержать от 6 до 20 символов';
-       passwordMessageDiv.innerText = translations[userLang]['password-message'];
+        // passwordMessageDiv.innerText = "Password must be between 8 and 15 characters long"
+        passwordMessageDiv.innerText = translations[userLang]['password-message'];
         passwordMessageDiv.style.color = 'red';
     } else {
         passwordMessageDiv.innerText = '';
@@ -247,7 +248,8 @@ if (passwordInput.value.length > 0 || confirmPasswordInput.value.length > 0) {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-                    console.log("Вход выполнен успешно!");
+                    console.log("Successful login");
+                    messageDiv.innerText = "Successful login"
                 //    messageDiv.innerText = "Вход выполнен успешно!";
                     // messageDiv.innerText =translations[userLang]['loginSuccess'];
                     messageDiv.style.color = 'green';

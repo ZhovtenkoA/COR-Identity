@@ -96,9 +96,6 @@ async def login(
     )
     refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
     await repository_users.update_token(user, refresh_token, db)
-    # redirect_url = repository_users.redirect_url
-    # if redirect_url == None:
-    #     redirect_url = "https://cor-identity-01s.cor-medical.ua"
     logger.debug(f"{user.email}  login success")
     return {
         "access_token": access_token,
@@ -164,7 +161,7 @@ async def send_verification_code(
         logger.debug(f"{body.email}Account already exists")
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Пользователь  '{body.email}' уже существует",
+            detail="Account already exists",
         )
 
     if exist_user == None:
@@ -213,7 +210,7 @@ async def forgot_password_send_verification_code(
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user == None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не существует"
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
     if exist_user:
         background_tasks.add_task(
@@ -234,7 +231,7 @@ async def change_password(body: ChangePasswordModel, db: Session = Depends(get_d
     user = await repository_users.get_user_by_email(body.email, db)
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден"
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
     else:
         if body.password:
