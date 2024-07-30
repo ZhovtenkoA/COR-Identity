@@ -24,7 +24,7 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="cor_auth/static"), name="static")
 
-origins = ["http://localhost:3000", "http://192.168.153.21:3000"]
+origins = settings.allowed_redirect_urls
 
 # Middleware для CORS
 app.add_middleware(
@@ -51,13 +51,6 @@ async def exception_handler(request: Request, exc: Exception):
     )
 
 
-# @app.exception_handler(RequestValidationError)
-# async def validation_exception_handler(request: Request, exc: RequestValidationError):
-#     logger.error("Request validation error", exc_info=exc)
-#     return JSONResponse(
-#         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-#         content={"detail": "Validation Error"},
-#     )
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -170,9 +163,24 @@ async def add_process_time_header(request: Request, call_next):
 
 
 # Событие при старте приложения
-@app.on_event("startup")
-async def startup():
+# @app.on_event("startup")
+# async def startup():
+#     print("------------- STARTUP --------------")
+
+
+from contextlib import asynccontextmanager
+# Обработчики событий жизненного цикла
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Код, который выполняется при запуске приложения
     print("------------- STARTUP --------------")
+    logger.info("Application startup")
+    yield
+    # Код, который выполняется при остановке приложения
+    logger.info("Application shutdown")
+
+app.router.lifespan_context = lifespan
+
 
 
 # if settings.app_env == "production":
