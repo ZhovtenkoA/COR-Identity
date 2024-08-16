@@ -55,9 +55,9 @@ class Auth:
         """
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
+            expire = datetime.now(timezone.utc) + timedelta(hours=expires_delta)
         else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=60)
+            expire = datetime.now(timezone.utc) + timedelta(hours=1)
         to_encode.update(
             {"iat": datetime.now(timezone.utc), "exp": expire, "scp": "access_token"}
         )
@@ -84,7 +84,7 @@ class Auth:
         """
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
+            expire = datetime.now(timezone.utc) + timedelta(hours=expires_delta)
         else:
             expire = datetime.now(timezone.utc) + timedelta(days=7)
         to_encode.update(

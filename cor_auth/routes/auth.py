@@ -91,17 +91,22 @@ async def login(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
         )
-    access_token = await auth_service.create_access_token(
-        data={"oid": user.id}, expires_delta=3600
-    )
-    refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
+    if user.email in settings.eternal_accounts:
+        access_token = await auth_service.create_access_token(
+            data={"oid": user.id}, expires_delta=1000000
+        )
+        refresh_token = await auth_service.create_refresh_token(data={"oid": user.id}, expires_delta=10000000)
+    else:
+        access_token = await auth_service.create_access_token(
+            data={"oid": user.id}, expires_delta=1
+        )
+        refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
     await repository_users.update_token(user, refresh_token, db)
     logger.debug(f"{user.email}  login success")
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
-        # "redirectUrl": redirect_url,
     }
 
 
@@ -130,9 +135,12 @@ async def refresh_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
         )
-
-    access_token = await auth_service.create_access_token(data={"oid": user.id})
-    refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
+    if user.email in settings.eternal_accounts:
+        access_token = await auth_service.create_access_token(data={"oid": user.id}, expires_delta=1000000)
+        refresh_token = await auth_service.create_refresh_token(data={"oid": user.id}, expires_delta=10000000)
+    else:
+        access_token = await auth_service.create_access_token(data={"oid": user.id})
+        refresh_token = await auth_service.create_refresh_token(data={"oid": user.id})
     user.refresh_token = refresh_token
     db.commit()
     await repository_users.update_token(user, refresh_token, db)
