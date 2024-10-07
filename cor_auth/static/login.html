@@ -104,7 +104,7 @@ input[type="checkbox"] {
             </select>
         </div>
     </div>
-    <script src="translation.js"></script>
+    <script src="static/translation.js"></script>
     <h1 data-translate="title">Authorization and Registration</h1>
    <!-- <form id="login-form" action="/api/auth/login" method="POST">-->
         <form id="login-form">
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!state.id) {
             return state.text;
         }
-        var baseUrl = 'flags';
+        var baseUrl = 'static/flags';
         var $state = $(
             '<span><img src="' + baseUrl + '/' + state.element.getAttribute('data-icon') + '" class="flag-img" /> ' + state.text + '</span>'
         );
