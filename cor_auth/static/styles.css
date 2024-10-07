@@ -371,4 +371,33 @@ a:hover {
      background: none;
      border: none;
 
-        }        
+ }     
+#login-form {
+            display: flex;
+            flex-direction: column; /* Элементы расположены вертикально */
+            max-width: 400px; /* Максимальная ширина формы */
+            margin: auto; /* Центрируем форму на странице */
+            padding: 20px; /* Отступы внутри формы */
+            border: 1px solid #ccc; /* Граница вокруг формы */
+            border-radius: 5px; /* Скругление углов */
+}
+        /* Стили для чекбокса и его подписи */ 
+.checkbox-container {
+            display: flex; /* Используем flexbox для размещения в одну линию */
+            align-items: center; /* Вертикальное выравнивание по центру */
+            font-size: 14px; /* Уменьшаем размер шрифта */
+            margin-top: 10px; /* Отступ сверху */
+            margin-bottom: 20px; /* Отступ снизу */
+}
+
+        /* Убираем отступы по умолчанию для чекбокса */
+input[type="checkbox"] {
+            margin: 0; /* Убираем отступы */
+            width: auto; /* Устанавливаем ширину */
+            height: auto; /* Устанавливаем высоту */
+        }
+
+        /* Уменьшение шрифта для надписи */
+.checkbox-container label {
+            margin-left: 5px; /* Добавляем немного отступа между чекбоксом и надписью */
+        }

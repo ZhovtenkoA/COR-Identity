@@ -58,6 +58,38 @@
             .google-signin-btn img {
                 margin-right: 10px;
             }
+
+
+
+            #login-form {
+            display: flex;
+            flex-direction: column; /* Элементы расположены вертикально */
+            max-width: 400px; /* Максимальная ширина формы */
+            margin: auto; /* Центрируем форму на странице */
+            padding: 5px; /* Отступы внутри формы */
+            border: 1px solid #ccc; /* Граница вокруг формы */
+            border-radius: 5px; /* Скругление углов */
+}
+        /* Стили для чекбокса и его подписи */ 
+.checkbox-container {
+            display: flex; /* Используем flexbox для размещения в одну линию */
+            align-items:left; /* Вертикальное выравнивание по центру */
+            font-size: 10px; /* Уменьшаем размер шрифта */
+            margin-top: 5px; /* Отступ сверху */
+            margin-bottom: 5px; /* Отступ снизу */
+}
+
+        /* Убираем отступы по умолчанию для чекбокса */
+input[type="checkbox"] {
+            margin: 0; /* Убираем отступы */
+            width: auto; /* Устанавливаем ширину */
+            height: auto; /* Устанавливаем высоту */
+        }
+
+        /* Уменьшение шрифта для надписи */
+.checkbox-container label {
+            margin-left: 10px; /* Добавляем немного отступа между чекбоксом и надписью */
+        }
         </style>
 </head>
 <body>
@@ -72,13 +104,19 @@
             </select>
         </div>
     </div>
-    <script src="static/translation.js"></script>
+    <script src="translation.js"></script>
     <h1 data-translate="title">Authorization and Registration</h1>
-    <form id="login-form">
+   <!-- <form id="login-form" action="/api/auth/login" method="POST">-->
+        <form id="login-form">
         <label for="email" data-translate="email-label">Email:</label>
-        <input type="email" id="email" name="username" required>
+        <input type="email" id="email" name="username" autocomplete="username"  required>
         <label for="password" data-translate="password-label">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
+        <!-- Чекбокс "Запомнить меня" -->
+        <div class="checkbox-container">
+            <input type="checkbox" id="remember-me" name="remember-me">
+            <label for="remember-me" data-translate="remember-me-label">Запомнить меня</label>
+        </div>
         <button type="submit" data-translate="login-button">Login</button>
     </form>
     <div id="message"></div>
@@ -179,10 +217,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     localStorage.setItem('redirectUrl', redirectUrl);
 
+
+document.addEventListener('DOMContentLoaded', function() {
+    const rememberMeCheckbox = document.getElementById('remember-me');
+    const emailInput = document.getElementById('email'); // Поле для email
+    // Проверка состояния чекбокса при загрузке страницы
+    const rememberMeStatus = localStorage.getItem('remember_me');
+    const savedEmail = localStorage.getItem('saved_email');
+    if (rememberMeStatus === 'true') {
+        rememberMeCheckbox.checked = true; // Устанавливаем чекбокс, если в localStorage true
+        if (savedEmail) {
+            emailInput.value = savedEmail; // Вставляем сохранённый email в форму
+        }
+    } else {
+        rememberMeCheckbox.checked = false; // По умолчанию чекбокс не отмечен
+    }
+
+   // Сохранение состояния чекбокса при его изменении
+   rememberMeCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            localStorage.setItem('remember_me', 'true'); // Сохраняем состояние как "отмечен"
+        } else {
+            localStorage.setItem('remember_me', 'false'); // Сохраняем состояние как "не отмечен"
+            // Моментально удаляем токены и email при снятии галочки
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('saved_email'); // Удаляем сохранённый email
+            sessionStorage.removeItem('access_token');
+            sessionStorage.removeItem('refresh_token');
+            emailInput.value = ''; 
+            console.log('Токены и email удалены из localStorage и sessionStorage');
+        }
+    });
+});
+
+
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('login-form');
         const messageDiv = document.getElementById('message');
-
+        const rememberMeCheckbox = document.getElementById('remember-me');
+        const emailInput = document.getElementById('email'); // Поле для email
         form.addEventListener('submit', (event) => {
             event.preventDefault();
 
@@ -203,18 +277,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         const response = JSON.parse(xhr.responseText);
                         console.log("Successful login.");
                         const userLang = localStorage.getItem('selectedLanguage');
-                        // console.log("__________translation___________");
-                        // console.log(translations); // Проверить объект translations в консоли
-                        // console.log("_____________userLang____________");
-                        // console.log(userLang); // Проверить значение userLang в консоли
-                        // console.log("_____________translations[userLang]____________");
-                        // console.log(translations[userLang]); // Проверить значение translations[userLang] в консоли
-                        // console.log("_____________messageDiv.innerText____________");
-                        // console.log(translations[userLang]["message-ok"]);
-                        // console.log(errorMessage); // Проверить значение errorMessage в консоли
-                        messageDiv.innerText = "Successful login"
-                        // messageDiv.innerText = translations[userLang]["message-ok"];
+                        messageDiv.innerText = translations[userLang]["message-ok"];
                         messageDiv.style.color = 'green';
+
+                     // Сохранение токенов, состояния чекбокса и email
+                     if (rememberMeCheckbox.checked) {
+                        localStorage.setItem('access_token', response.access_token);
+                        localStorage.setItem('refresh_token', response.refresh_token);
+                        localStorage.setItem('remember_me', 'true');
+                        localStorage.setItem('saved_email', emailInput.value); // Сохраняем email
+                    } else {
+                        // Сохранение в sessionStorage, если "Запомнить меня" не выбрано
+                        sessionStorage.setItem('access_token', response.access_token);
+                        sessionStorage.setItem('refresh_token', response.refresh_token);
+                        localStorage.removeItem('remember_me'); // Удаляем флаг, если чекбокс не отмечен
+                        localStorage.removeItem('saved_email'); // Удаляем email
+                    }
+
 
                         setTimeout(() => {
                             const refreshToken = response.refresh_token;
@@ -231,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     } else {
                         const errorMessage = getErrorMessage(xhr.status, messageDiv);
-                        // console.error("Error during login.");
+                        console.error("Error during login.");
                         messageDiv.innerText = errorMessage;
                         messageDiv.style.color = 'red';
                     }
@@ -240,28 +319,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
             xhr.send(params);
         });
+
+
+         // Проверка токенов и флага "Запомнить меня" при нажатии на кнопку "Вход"
+    const loginButton = document.querySelector('button[data-translate="login-button"]');
+    loginButton.addEventListener('click', function() {
+        const storedAccessToken = localStorage.getItem('access_token');
+        const storedRefreshToken = localStorage.getItem('refresh_token');
+        const rememberMe = localStorage.getItem('remember_me');
+
+        if (storedAccessToken && storedRefreshToken && rememberMe === 'true') {
+            console.log('Токены найдены в localStorage. Перенаправление после нажатия кнопки "Вход"...');
+            const url = `${redirectUrl}/?access_token=${storedAccessToken}&refresh_token=${storedRefreshToken}`;
+            window.location.href = url;
+        } else {
+            console.log('Токены не найдены или флаг "Запомнить меня" не установлен.');
+        }
+    });
+
+
+
+
+
+
     });
 
     function getErrorMessage(status, messageDiv) {
-        const userLang = localStorage.getItem('selectedLanguage');
-        switch(status) {      
+        switch(status) {
             case 401:
-                // messageDiv.innerText = translations[userLang]["message-error"];
+                const userLang = localStorage.getItem('selectedLanguage');
+                messageDiv.innerText = translations[userLang]["message-error"];
                 messageDiv.style.color = 'red';
                 return "Invalid username or password.";
-            case 404:
+            case 400:
                 messageDiv.innerText = "User not registered!";
                 messageDiv.style.color = 'red';
                 return "User not registered!";
             case 403:
                 return "Access denied.";
             default:
-                // console.error("Error during login.");
-                // console.log(translations); // Проверить объект translations в консоли
-                // console.log(userLang); // Проверить значение userLang в консоли
-                // console.log(translations[userLang]); // Проверить значение translations[userLang] в консоли
-                // console.log(errorMessage); // Проверить значение errorMessage в консоли
-                // messageDiv.innerText = translations[userLang]["message-error"];
+                console.error("Error during login.");
+                messageDiv.innerText = translations[userLang]["message-error"];
                 messageDiv.style.color = 'red';
                 return "Error during login.";
         }
@@ -348,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!state.id) {
             return state.text;
         }
-        var baseUrl = 'static/flags';
+        var baseUrl = 'flags';
         var $state = $(
             '<span><img src="' + baseUrl + '/' + state.element.getAttribute('data-icon') + '" class="flag-img" /> ' + state.text + '</span>'
         );

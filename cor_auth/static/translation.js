@@ -98,7 +98,8 @@ const translations = {
         "heading" : "Сброс пароля",
         'loginSuccess': 'Вход выполнен успешно!',
         'password-changed': 'Пароль изменён!',
-        'login-error': 'Ошибка входа.'
+        'login-error': 'Ошибка входа.',
+        "remember-me-label": "Оставаться в системе" 
     },
     en: {
         title: "Authorization",
@@ -136,7 +137,8 @@ const translations = {
         "heading" : "Password Reset",
         'loginSuccess': 'Login successful!',
         'password-changed': 'Password has been changed!',
-        'login-error': 'Login error.'
+        'login-error': 'Login error.',
+        "remember-me-label": "Stay signed in"
     },
     zh: {
         title: "授权",
@@ -174,7 +176,8 @@ const translations = {
         "heading" : "重设密码",
         'loginSuccess': '登录成功！',
         'password-changed': '密码已更改。',
-        'login-error': '登录错误。'
+        'login-error': '登录错误。',
+        "remember-me-label": "保持登录"
     },
     uk: {
         title: "Авторизація",
@@ -212,5 +215,6 @@ const translations = {
         "heading" : "Скидання пароля",
         'loginSuccess': 'Вхід виконано успішно!',
         'password-changed': 'Пароль змінено!',
-        'login-error': 'Помилка входу.'
+        'login-error': 'Помилка входу.',
+        "remember-me-label": "Оставаться в системе" 
     },}
